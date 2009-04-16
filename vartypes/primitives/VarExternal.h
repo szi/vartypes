@@ -82,14 +82,9 @@ protected:
     parent.writeToFile(filename.c_str());
   }
 
-  virtual void readChildren(XMLNode & us)
-  {
-    (void)us;
-    //load file to empty parent
-    XMLNode parent = XMLNode::openFileHelper(filename.c_str(),"VarXML");
-    list=readChildrenHelper(parent, list, false, false);
-    CHANGE_MACRO;
-  }
+  virtual void readChildren(XMLNode & us);
+
+  virtual void loadExternal();
 
 #endif
 };

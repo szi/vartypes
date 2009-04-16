@@ -15,6 +15,9 @@ HEADERS += ../vartypes/VarXML.h
 SOURCES += ../vartypes/VarBase64.cpp
 HEADERS += ../vartypes/VarBase64.h
 
+SOURCES += ../vartypes/VarNotifier.cpp
+HEADERS += ../vartypes/VarNotifier.h
+
 SOURCES += ../vartypes/primitives/VarData.cpp
 HEADERS += ../vartypes/primitives/VarData.h
 
@@ -32,6 +35,9 @@ HEADERS += ../vartypes/primitives/VarList.h
 
 SOURCES += ../vartypes/primitives/VarStringEnum.cpp
 HEADERS += ../vartypes/primitives/VarStringEnum.h
+
+SOURCES += ../vartypes/primitives/VarSelection.cpp
+HEADERS += ../vartypes/primitives/VarSelection.h
 
 SOURCES += ../vartypes/primitives/VarExternal.cpp
 HEADERS += ../vartypes/primitives/VarExternal.h

@@ -22,7 +22,7 @@
 #include <QList>
 #include <QListIterator>
 #include <QMutex>
-#include "Range.h"
+#include "ClosedRange.h"
 #include "enhanced/TimeVar.h"
 #include "VarTypes.h"
 #include "TimePointer.h"
@@ -54,9 +54,9 @@ class TimeLine : public VarData {
       return list.size();
     }
 
-    ValueRange getValueRange() const {
+    ValueClosedRange getValueClosedRange() const {
 
-      ValueRange result;
+      ValueClosedRange result;
       QListIterator<TimeVar *> i ( list );
       bool first = true;
       while ( i.hasNext() ) {
@@ -76,9 +76,9 @@ class TimeLine : public VarData {
 
       CHANGE_MACRO;
     }
-    TimeRange getTimeRange() const {
+    TimeClosedRange getTimeClosedRange() const {
 
-      TimeRange result;
+      TimeClosedRange result;
       QListIterator<TimeVar *> i ( list );
       while ( i.hasNext() ) {
         TimeVar * val = ( TimeVar  * ) i.next();
@@ -93,11 +93,11 @@ class TimeLine : public VarData {
 
     void setTimePointer ( TimePointer * tp ) {
       if ( cur != 0 ) {
-        disconnect ( tp, SIGNAL ( hasChanged() ), this, SLOT ( slotPointerChange() ) );
+        disconnect ( tp, SIGNAL ( hasChanged(VarData *) ), this, SLOT ( slotPointerChange() ) );
       }
       qDebug ( "setup pointer\n" );
       cur = tp;
-      connect ( tp, SIGNAL ( hasChanged() ), this, SLOT ( slotPointerChange() ) );
+      connect ( tp, SIGNAL ( hasChanged(VarData *) ), this, SLOT ( slotPointerChange() ) );
       CHANGE_MACRO;
     }
 

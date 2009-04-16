@@ -19,7 +19,7 @@
    <string>TimeControl</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="graphics.qrc" >:/icons/icons/xclock.png</iconset>
+   <iconset resource="graphics.qrc" >:/icons/xclock.png</iconset>
   </property>
   <layout class="QVBoxLayout" >
    <property name="spacing" >

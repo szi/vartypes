@@ -23,6 +23,15 @@
 #include <vector>
 #include <limits.h>
 #include <float.h>
+#include <set>
+#include <queue>
+#include <QPainter>
+#include <QStyleOptionViewItem>
+#include <QModelIndex>
+#include <QLineEdit>
+
+
+class VarItemDelegate;
 
 /*!
   \class  VarData
@@ -63,7 +72,8 @@ enum vDataFlags {
   DT_FLAG_NOLOAD = 0x01 << 5, /// don't load this subtree from XML
   DT_FLAG_PERSISTENT = 0x01 << 6, /// make the item editor be persistent (always open, not just when clicked on it)
   DT_FLAG_HIDE_CHILDREN = 0x01 << 7, /// hide the entire subtree (but not node itself)
-  DT_FLAG_ENUM_COUNT = 0x01 << 8,
+  DT_FLAG_NOLOAD_ENUM_CHILDREN = 0x01 << 8, /// don't load this subtree from XML  
+  DT_FLAG_ENUM_COUNT = 0x01 << 9,
   DT_FLAG_NOSTORE = DT_FLAG_NOSAVE | DT_FLAG_NOLOAD
 };
 
@@ -83,6 +93,7 @@ enum vDataTypeEnum {
   DT_TIMELINE,
   DT_LIST,
   DT_STRINGENUM,
+  DT_SELECTION,
   DT_TRIGGER,
   DT_QWIDGET,
   //---IMPORTANT-----------
@@ -99,7 +110,7 @@ enum vDataTypeEnum {
 
 #ifndef VDATA_NO_QT
   //if using QT, trigger the hasChanged() signal
-  #define CHANGE_MACRO hasChanged();
+  #define CHANGE_MACRO emit(hasChanged(this));
 #else
   //if not using QT, don't do anything
   #define CHANGE_MACRO
@@ -128,7 +139,7 @@ signals:
   /// This signal is triggered when any data or flag of this VarType has changed.
   /// This includes changes that were done programmatically, as well through a GUI.
   /// It also includes changes to render-flags or other meta-data.
-  void hasChanged();
+  void hasChanged(VarData *);
 
   /// This signal is triggered when data of this VarType has been edited by a user through an MVC viewer.
   /// Unlike /c hasChanged(), this signal is not necessarily triggered if this data was internally changed.
@@ -265,6 +276,13 @@ public:
   /// \see hasValue()
   virtual double getValue() const; //returns the numeric value
 
+  /// Finds a child based on its label
+  /// Returns 0 if not found
+  VarData * findChild(string label) const;
+
+  /// TODO: implement this function. It might be useful for some purposes.
+  /// VarData * merge(VarData * structure, VarData * data);
+
 
 #ifndef VDATA_NO_XML
   //XML LOAD/STORE functions
@@ -280,6 +298,8 @@ protected:
   virtual void readText(XMLNode & us);
   virtual void readChildren(XMLNode & us);
 
+  virtual void loadExternal();
+
   static XMLNode findOrAppendChild(XMLNode & parent, string key, string val);
 public:
   /// Clear an XMLNode's list of children.
@@ -294,6 +314,19 @@ public:
   /// Let this VarData node load the contents of an XMLNode.
   void readXML(XMLNode & us);
 #endif
+
+//-------------MODEL VIEW STUFF BELOW-------------------
+
+
+virtual QWidget * createEditor(const VarItemDelegate * delegate, QWidget *parent, const QStyleOptionViewItem &option);
+virtual void setEditorData(const VarItemDelegate * delegate, QWidget *editor) const;
+virtual void setModelData(const VarItemDelegate * delegate, QWidget *editor);
+virtual QSize sizeHint(const VarItemDelegate * delegate, const QStyleOptionViewItem & option, const QModelIndex & index) const;
+virtual void paint (const VarItemDelegate * delegate, QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+
+
+
+
 };
 
 

@@ -21,7 +21,7 @@
 
 #ifndef VARTRIGGER_H_
 #define VARTRIGGER_H_
-#include "primitives/VarQWidget.h"
+#include "primitives/VarData.h"
 #include <QPushButton>
 
 /*!
@@ -36,17 +36,20 @@
 
   If you don't know what VarTypes are, please see \c VarTypes.h 
 */
-class VarTrigger : public VarAbstractQWidget
+class VarTrigger : public VarData
 {
 #ifndef VDATA_NO_QT
   Q_OBJECT
 protected:
   int _counter;
   string label;
+signals:
+  void signalTriggered();
 protected slots:
   void trigger() {
     DT_LOCK;
     _counter++;
+    emit(signalTriggered());
     DT_UNLOCK;
     CHANGE_MACRO;
     wasEdited((VarData*)this);
@@ -56,11 +59,11 @@ public:
 
   /// constructs a new VarTrigger
   /// \param _label The label of the button to be rendered in a GUI view.
-  VarTrigger(string _name="", string _label="") : VarAbstractQWidget(_name)
+  VarTrigger(string _name="", string _label="") : VarData(_name)
   {
     label=_label;
     _counter=0;
-    addRenderFlags( DT_FLAG_PERSISTENT );
+    _flags |= DT_FLAG_PERSISTENT;
     CHANGE_MACRO;
   }
 
@@ -69,6 +72,15 @@ public:
 
   virtual void resetToDefault()
   {
+  }
+
+  /// get and reset the internal counter
+  virtual int getAndResetCounter() {
+    DT_LOCK;
+    int v=_counter;
+    _counter=0;
+    DT_UNLOCK;
+    return v;
   }
 
   /// get the internal counter
@@ -108,12 +120,25 @@ public:
 
   virtual vDataTypeEnum getType() const { return DT_TRIGGER; };
 
-  virtual QWidget * createQWidget() const  { 
-    QPushButton * tmp=new QPushButton();
+#endif
+  //Qt model/view gui stuff:
+  public:
+  virtual QWidget * createEditor(const VarItemDelegate * delegate, QWidget *parent, const QStyleOptionViewItem &option) {
+    (void)delegate;
+    (void)option;
+    QPushButton * tmp=new QPushButton(parent);
     tmp->setText(QString::fromStdString(label));
     connect(tmp,SIGNAL(clicked()),this,SLOT(trigger()));
     return tmp;
   }
-#endif
+  virtual void setEditorData(const VarItemDelegate * delegate, QWidget *editor) const {
+    (void)delegate;
+    (void)editor;
+  }
+  virtual void setModelData(const VarItemDelegate * delegate, QWidget *editor) {
+    (void)delegate;
+    (void)editor;
+  }
+
 };
 #endif

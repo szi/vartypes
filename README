@@ -1,6 +1,6 @@
 ========================================================================
  VarTypes
- Author:  Stefan Zickler <szickler (-at-) cs.cmu.edu>, (C) 2007-2008
+ Author:  Stefan Zickler <szickler (-at-) cs.cmu.edu>, (C) 2007-2009
 ========================================================================
  This software is free: you can redistribute it and/or modify
  it under the terms of the GNU General Public License Version 3,
@@ -18,6 +18,15 @@
 
 =======================================================================
  Changelog:
+ 4/16/09  - v0.4 - added multi-item selection type
+                 - added VarNotifier class to catch change-events
+                   for entire sub-trees
+                 - fixed several bugs
+                 - improved visualization:
+                    - used persistent editors where applicable
+                    - bools now based on checkboxes
+                    - moves delegate functionality into respective
+                      type classes
  10/31/08 - v0.3 - added string enums, fixed various performance bugs
                  - added doxygen-style headers to files and classes
  11/13/07 - v0.2 - basic thread-safety added

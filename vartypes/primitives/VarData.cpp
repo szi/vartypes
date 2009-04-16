@@ -19,6 +19,7 @@
 */
 
 #include "VarData.h"
+#include "../gui/VarItemDelegate.h"
 
 vDataTypeEnum VarData::stringToType(string stype)
 {
@@ -46,6 +47,8 @@ vDataTypeEnum VarData::stringToType(string stype)
     return DT_LIST;
   } else if (stype=="stringenum") {
     return DT_STRINGENUM;
+  } else if (stype=="selection") {
+    return DT_SELECTION;
   } else if (stype=="trigger") {
     return DT_TRIGGER;
   } else if (stype=="qwidget") {
@@ -82,6 +85,8 @@ string VarData::typeToString(vDataTypeEnum vt)
     return "list";
   } else if (vt==DT_STRINGENUM) {
     return "stringenum";
+  } else if (vt==DT_SELECTION) {
+    return "selection";
   } else if (vt==DT_TRIGGER) {
     return "trigger";
   } else if (vt==DT_QWIDGET) {
@@ -382,17 +387,24 @@ void VarData::readXML(XMLNode & us)
   readChildren(us);
 }
 
+void VarData::loadExternal() {
+
+}
+
 vector<VarData *> VarData::readChildrenHelper(XMLNode & parent , vector<VarData *> existing_children, bool only_update_existing, bool blind_append)
 {
   //this again does non-destructive integration
   //As a result we update any predefined structures and
   //append any types that don't exist yet.
-
   vector<VarData *> result=existing_children;
   int n=parent.nChildNode("Var");
   int i,myIterator=0;
 
   //iterate through them and check if we already exist
+  set<VarData *> unmatched_children;
+  for (unsigned int j=0;j<existing_children.size();j++) {
+    unmatched_children.insert(existing_children[j]);
+  }
   for (i=0; i<n; i++) {
     XMLNode t=parent.getChildNode("Var",&myIterator);
     string sname=fixString(t.getAttribute("name"));
@@ -402,7 +414,7 @@ vector<VarData *> VarData::readChildrenHelper(XMLNode & parent , vector<VarData 
       bool found=false;
       if (sname!="" && blind_append==false) {
         //try to find existing child with this name
-        for (unsigned j=0;j<existing_children.size();j++) {
+        for (unsigned int j=0;j<existing_children.size();j++) {
           if (existing_children[j]->getName()==sname) {
             if (existing_children[j]->getType()==type) {
               existing_children[j]->readXML(t);
@@ -425,11 +437,70 @@ vector<VarData *> VarData::readChildrenHelper(XMLNode & parent , vector<VarData 
           td->readXML(t);
           result.push_back(td);
         }
+
       }
     } else {
       fprintf(stderr,"Found var with no or unknown type in XML... type: %s\n",stype.c_str());
     }
   }
+  //---fix for recursing tree that's not defined in xml yet:
+  queue<VarData *> _queue;
+  for (set<VarData *>::iterator iter = unmatched_children.begin(); iter!=unmatched_children.end(); iter++) {
+    if (*iter!=0) _queue.push(*iter);
+  }
+   //recurse all unmatched children to make sure we load all externals:
+  while(_queue.empty()==false) {
+    VarData * d = _queue.front();
+    _queue.pop();
+    d->loadExternal();
+    vector<VarData *> children = d->getChildren();
+    int s=children.size();
+    for (int i=0;i<s;i++) {
+      if (children[i]!=0) _queue.push(children[i]);
+    }
+  }
+  //---end of fix
   return result;
 }
+
+// Finds a child based on its label
+// Returns 0 if not found.
+VarData * VarData::findChild(string label) const {
+  vector<VarData *> children = getChildren();
+  unsigned int s = children.size();
+  for (unsigned int i=0;i<s;i++) {
+    if (children[i]->getName().compare(label)==0) return (children[i]);
+  }
+  return 0;
+}
+
+
+//------------MODEL VIEW GUI STUFF:
+void VarData::paint (const VarItemDelegate * delegate, QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const {
+  //let the QT default delegate do the painting:
+  delegate->QItemDelegate::paint(painter,option,index);
+}
+
+QWidget * VarData::createEditor(const VarItemDelegate * delegate, QWidget *parent, const QStyleOptionViewItem &option) {
+  (void)delegate;
+  (void)option;
+  return new QLineEdit(parent);
+}
+
+void VarData::setEditorData(const VarItemDelegate * delegate, QWidget *editor) const {
+  (void)delegate;
+  QLineEdit * ledit=(QLineEdit *) editor;
+  ledit->setText(QString::fromStdString(getString()));
+}
+
+void VarData::setModelData(const VarItemDelegate * delegate, QWidget *editor) {
+  (void)delegate;
+  QLineEdit * ledit=(QLineEdit *) editor;
+  if (setString(ledit->text().toStdString())) mvcEditCompleted();
+}
+
+QSize VarData::sizeHint(const VarItemDelegate * delegate, const QStyleOptionViewItem & option, const QModelIndex & index) const {
+  return (delegate->QItemDelegate::sizeHint(option, index));
+}
+
 #endif

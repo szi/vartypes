@@ -21,6 +21,7 @@
 #ifndef VINT_H_
 #define VINT_H_
 #include "primitives/VarData.h"
+#include <QSpinBox>
 
 /*!
   \class  VarInt
@@ -212,6 +213,35 @@ protected:
   }
 
 #endif
+
+//Qt model/view gui stuff:
+public:
+virtual QWidget * createEditor(const VarItemDelegate * delegate, QWidget *parent, const QStyleOptionViewItem &option) {
+  //TODO: hookup editor changes on press-enter and on spin:
+  (void)delegate;
+  (void)parent;
+  (void)option;
+  QSpinBox * w = new QSpinBox(parent);
+  //connect((const QObject *)w,SIGNAL(editingFinished ( int )),(const QObject *)delegate,SLOT(editorChangeEvent()));
+  //uncomment the following line for instantaneous updates:
+  //connect((const QObject *)w,SIGNAL(valueChanged ( int )),(const QObject *)delegate,SLOT(editorChangeEvent()));
+  return w;
+}
+
+virtual void setEditorData(const VarItemDelegate * delegate, QWidget *editor) const {
+  (void)delegate;
+  QSpinBox * spin=(QSpinBox *) editor;
+  spin->setRange(getMin(),getMax() );
+  spin->setValue(getInt());
+}
+
+virtual void setModelData(const VarItemDelegate * delegate, QWidget *editor) {
+  (void)delegate;
+  QSpinBox * spin=(QSpinBox *) editor;
+  if (setInt(spin->value()) ) mvcEditCompleted();
+}
+
+
 
 
 };

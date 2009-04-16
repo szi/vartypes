@@ -112,7 +112,7 @@ public:
 
   virtual void printdebug() const
   {
-    printf("Data Blob pointer %d , size: %d\n",(int)_dpointer,(int)_dsize);
+    printf("Data Blob pointer %p , size: %d\n",_dpointer,(int)_dsize);
   }
 
   const char * getSerialString() const {
@@ -128,6 +128,15 @@ public:
   virtual string getString() const { return "Pointer";  };
   virtual bool hasValue()  const { return false; };
   virtual bool setString(const string & val) { (void)val; return false; };
+
+//Qt model/view gui stuff:
+public:
+  virtual QWidget * createEditor(const VarItemDelegate * delegate, QWidget *parent, const QStyleOptionViewItem &option) {
+    (void)delegate;
+    (void)option;
+    (void)parent;
+    return 0;
+  }
 
 };
 

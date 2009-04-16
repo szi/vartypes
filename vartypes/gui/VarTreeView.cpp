@@ -25,6 +25,9 @@ VarTreeView::VarTreeView(VarTreeModel * tmodel) {
   delegate = new VarItemDelegate();
   tw->setItemDelegate(delegate);
   tw->setAlternatingRowColors(true);
+  tw->setUniformRowHeights ( false );
+  tw->setAnimated(false);
+  tw->setWordWrap(true);
   tw->setEditTriggers(tw->editTriggers() | QAbstractItemView::CurrentChanged);
   if (tmodel!=0) setModel(tmodel);
   search_edit = new QLineEdit(this);
@@ -102,39 +105,26 @@ void VarTreeView::checkDataChanged ( const QModelIndex & topLeft, const QModelIn
           if (dt!=0) {
             if ((dt->getRenderFlags() & DT_FLAG_PERSISTENT) != 0x00) {
               tw->openPersistentEditor(index);
-            }
+            } /*else {
+              tw->closePersistentEditor(index);
+            }*/
           }
         }
       }
     }
   }
-    /*QModelIndex index=topLeft.sibling(i,0);
-    if (index.isValid() && index.model()!=0) {
-      VarItem * item=(VarItem*)(((VarTreeModel*)index.model())->itemFromIndex (index));
-      if (item!=0) {
-        VarData * dt=item->getVarData();
-        if (dt!=0) {
-          if (dt->getType()==DT_STRING) {
-            QModelIndex index2=topLeft.sibling(i,1);
-            if (index2.isValid()) {
-              tw->openPersistentEditor(index2);
-            }
-          }
-          //printf("item: %s\n",dt->getName().c_str());
-        }
-      }
-    }*/
-    
-    
-//    tw->openPersistentEditor(topLeft.sibling(i,0));
+
 }
 void VarTreeView::newItemChecksRows(const QModelIndex & parent, int start, int end) {
-  
+  (void)parent;
+  (void)start;
+  (void)end;
+  /*  
   printf("parent: %d  %d new row: %d to %d\n",parent.row(),parent.column(),start,end); fflush(stdout);
   if (parent.row() != -1 && parent.column() != -1) {
     
     //tw->openPersistentEditor(parent.child(start,0));
-  }
+  }*/
 }
 
 /*void VarTreeView::newItemChecks(const QModelIndex & index) {

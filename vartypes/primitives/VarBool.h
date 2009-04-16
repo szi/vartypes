@@ -21,7 +21,7 @@
 #ifndef VARBOOL_H_
 #define VARBOOL_H_
 #include "primitives/VarData.h"
-
+#include <QCheckBox>
 /*!
   \class  VarBool
   \brief  A Vartype for storing booleans
@@ -46,6 +46,7 @@ public:
   {
     DT_LOCK;
     _val=_def=default_val;
+    _flags |= DT_FLAG_PERSISTENT;
     DT_UNLOCK;
     CHANGE_MACRO;
   }
@@ -103,6 +104,36 @@ public:
   virtual double getMaxValue() const  { return 1.0; }
   virtual double getValue() const { return getDouble(); }
 
+  //Qt model/view gui stuff:
+  virtual QWidget * createEditor(const VarItemDelegate * delegate, QWidget *parent, const QStyleOptionViewItem &option) {
+    (void)option;
+    QCheckBox * checker=new QCheckBox(parent);
+    connect((const QObject *)checker,SIGNAL(stateChanged(int)),(const QObject *)delegate,SLOT(editorChangeEvent()));
+    if (getBool()) {
+      checker->setText("True"); 
+    } else {
+      checker->setText("False");
+    }
+    return checker;
+
+  }
+  virtual void setEditorData(const VarItemDelegate * delegate, QWidget *editor) const {
+    (void)delegate;
+    QCheckBox * checker=(QCheckBox *) editor;
+    checker->setChecked(getBool());
+
+  }
+  virtual void setModelData(const VarItemDelegate * delegate, QWidget *editor) {
+    (void)delegate;
+    QCheckBox * checker=(QCheckBox *) editor;
+    if (checker->isChecked()) {
+      checker->setText("True"); 
+    } else {
+      checker->setText("False");
+    }
+    if (setBool(checker->isChecked())) mvcEditCompleted();
+
+  }
 
 };
 #endif /*VBOOL_H_*/

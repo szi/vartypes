@@ -36,7 +36,7 @@ void VarItem::changeUpdate() {
   if (dt!=0) {
     //update tree structure if it's a list item.
     if (areColFlagsSet(colflags,DT_COL_TREE_NODE)) {
-      if (dt->getType()==DT_LIST) {
+      if (dt->getType()==DT_LIST || dt->getType()==DT_EXTERNAL) {
         if (dt->areRenderFlagsSet(DT_FLAG_HIDE_CHILDREN)==false) {
           vd=((VarList*)dt)->getChildren();
         }
@@ -46,15 +46,18 @@ void VarItem::changeUpdate() {
   }
 }
 
+int VarItem::type() const {
+  return QStandardItem::UserType + 1;
+}
 void VarItem::update(VarData * _dt, const VarTreeViewOptions * _opts, VarColumnFlag myflags) {
   opts=_opts;
   colflags=myflags;
-  setEditable(areColFlagsSet( colflags,DT_COL_EDITABLE) && _dt->getType() != DT_LIST);
+  setEditable(areColFlagsSet( colflags,DT_COL_EDITABLE) && (_dt->getType() != DT_LIST && _dt->getType() != DT_EXTERNAL ));
   if (_dt!=dt && _dt!=0) {
     if (dt != 0) {
-      disconnect(dt,SIGNAL(hasChanged()),this,SLOT(changeUpdate()));
+      disconnect(dt,SIGNAL(hasChanged(VarData *)),this,SLOT(changeUpdate()));
     }
-    connect(_dt,SIGNAL(hasChanged()),this,SLOT(changeUpdate()));
+    connect(_dt,SIGNAL(hasChanged(VarData *)),this,SLOT(changeUpdate()));
     dt=_dt;
   }
   if (dt!=0) {
@@ -73,7 +76,11 @@ void VarItem::update(VarData * _dt, const VarTreeViewOptions * _opts, VarColumnF
         setIcon(QIcon(":/icons/vartypes/node.png"));
       }
     } else if (areColFlagsSet(colflags,DT_COL_TEXT_VALUE)) {
-      setText(QString::fromStdString(dt->getString()));
+      if ((dt->getRenderFlags() & DT_FLAG_PERSISTENT) != 0x00) {
+        setText("");
+      } else {
+        setText(QString::fromStdString(dt->getString()));
+      }
     }
   }
 }
