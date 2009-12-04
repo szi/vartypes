@@ -39,7 +39,6 @@ namespace VarTypes {
   */
   class VarTrigger : public VarType
   {
-  #ifndef VDATA_NO_QT
     Q_OBJECT
   protected:
     int _counter;
@@ -121,7 +120,6 @@ namespace VarTypes {
   
     virtual VarTypeId getType() const { return VARTYPE_ID_TRIGGER; };
   
-  #endif
     //Qt model/view gui stuff:
     public:
     virtual QWidget * createEditor(const VarItemDelegate * delegate, QWidget *parent, const QStyleOptionViewItem &option) {

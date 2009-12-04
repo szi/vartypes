@@ -51,9 +51,7 @@ namespace VarTypes {
   
   class VarQWidget : public VarType
   {
-  #ifndef VDATA_NO_QT
     Q_OBJECT
-  #endif
   protected:
   
     QWidget * _val;

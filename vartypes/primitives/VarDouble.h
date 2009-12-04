@@ -36,9 +36,7 @@ namespace VarTypes {
   
   class VarDouble : public VarTypeTemplate<VarDoubleVal> 
   {
-  #ifndef VDATA_NO_QT
     Q_OBJECT
-  #endif
   protected:
     SafeVarVal<VarDoubleVal> _def;
     double _min;

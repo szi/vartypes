@@ -38,9 +38,7 @@ namespace VarTypes {
   */
   class VarSelection : public VarType
   {
-  #ifndef VDATA_NO_QT
     Q_OBJECT
-  #endif
   protected:
     vector<VarType *> list;
   public:

@@ -36,9 +36,7 @@ namespace VarTypes {
   
   class VarBool : public VarTypeTemplate<VarBoolVal>
   {
-  #ifndef VDATA_NO_QT
     Q_OBJECT
-  #endif
   protected:
     SafeVarVal<VarBoolVal> _def;
   public:

@@ -41,7 +41,8 @@
                  - changed "renderFlags" to just "Flags" since
                    they control much more than just render behavior.
                  - changed string handling in XML i/o for
-                   code safety improvements                   
+                   code safety improvements
+                 - compilation should now work in windows                   
  4/16/09  - v0.4 - added multi-item selection type
                  - added VarNotifier class to catch change-events
                    for entire sub-trees

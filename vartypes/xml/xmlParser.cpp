@@ -307,14 +307,26 @@
               return f;
           }
       #else
+        #if defined(WIN32)
+          FILE *_tfopen(XMLCSTR filename,XMLCSTR mode) { return fopen(filename,mode); }
+          int _tcslen(XMLCSTR c)   { return strlen(c); }
+          int _tcsnicmp(XMLCSTR c1, XMLCSTR c2, int l) { return _strnicmp(c1,c2,l);}
+          int _tcsicmp(XMLCSTR c1, XMLCSTR c2) { return _strnicmp(c1,c2,strlen(c1)>strlen(c2)?strlen(c1):strlen(c2)); }
+          XMLSTR _tcsstr(XMLCSTR c1, XMLCSTR c2) { return (XMLSTR)strstr(c1,c2); }
+          XMLSTR _tcscpy(XMLSTR c1, XMLCSTR c2) { return (XMLSTR)strcpy(c1,c2); }
+        #else
           FILE *_tfopen(XMLCSTR filename,XMLCSTR mode) { return fopen(filename,mode); }
           int _tcslen(XMLCSTR c)   { return strlen(c); }
           int _tcsnicmp(XMLCSTR c1, XMLCSTR c2, int l) { return strncasecmp(c1,c2,l);}
           int _tcsicmp(XMLCSTR c1, XMLCSTR c2) { return strcasecmp(c1,c2); }
           XMLSTR _tcsstr(XMLCSTR c1, XMLCSTR c2) { return (XMLSTR)strstr(c1,c2); }
           XMLSTR _tcscpy(XMLSTR c1, XMLCSTR c2) { return (XMLSTR)strcpy(c1,c2); }
+        #endif
       #endif
-      int _strnicmp(const char *c1,const char *c2, int l) { return strncasecmp(c1,c2,l);}
+        #if defined(WIN32)
+        #else
+        int _strnicmp(const char *c1,const char *c2, int l) { return strncasecmp(c1,c2,l);}
+        #endif
   #endif
   
   /////////////////////////////////////////////////////////////////////////

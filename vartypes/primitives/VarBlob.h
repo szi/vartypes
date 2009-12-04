@@ -46,9 +46,7 @@ namespace VarTypes {
   
   class VarBlob : public VarType
   {
-  #ifndef VDATA_NO_QT
     Q_OBJECT
-  #endif
   protected:
     long _dsize;
     uint8_t * _dpointer;

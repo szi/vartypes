@@ -115,6 +115,7 @@ INCLUDEPATH += ../vartypes
 win32 {
 	CONFIG+=windows
 	DEFINES+=WIN32
+        DEFINES+=_CRT_SECURE_NO_WARNINGS
 }
 
 unix {

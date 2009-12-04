@@ -32,16 +32,14 @@
 #include <QModelIndex>
 #include <QLineEdit>
 #include "primitives/VarVal.h"
-  #ifndef VDATA_NO_QT
-    #include <QObject>
-  #endif
+#include <QObject>
   
   #ifndef VDATA_NO_XML
     #include "xml/xmlParser.h"
   #endif
   
   #ifndef VDATA_NO_THREAD_SAFETY
-    #include <pthread.h>
+    #include <QMutex>
   #endif
 
 namespace VarTypes {
@@ -82,33 +80,23 @@ namespace VarTypes {
   typedef int VarTypeFlag;
   
   
-  #ifndef VDATA_NO_QT
-    //if using QT, trigger the hasChanged() signal
-    #define VARTYPE_MACRO_CHANGED emit(hasChanged(this));
-  #else
-    //if not using QT, don't do anything
-    #define VARTYPE_MACRO_CHANGED
-  #endif
+  //if using QT, trigger the hasChanged() signal
+  #define VARTYPE_MACRO_CHANGED emit(hasChanged(this));
   
   #ifndef VDATA_NO_THREAD_SAFETY
-    #define VARTYPE_MACRO_LOCK pthread_mutex_lock((pthread_mutex_t*)_mutex);
-    #define VARTYPE_MACRO_UNLOCK pthread_mutex_unlock((pthread_mutex_t*)_mutex);
+    #define VARTYPE_MACRO_LOCK _mutex->lock();
+    #define VARTYPE_MACRO_UNLOCK _mutex->unlock();
   #else
     #define VARTYPE_MACRO_LOCK
     #define VARTYPE_MACRO_UNLOCK
   #endif
   
   
-  
-  #ifndef VDATA_NO_QT
   //if using QT, inherit QObject as a base
   class VarType : public QObject, public virtual VarVal
-  #else
-  class VarType : public virtual VarVal
-  #endif
   {
   
-  #ifndef VDATA_NO_QT
+
     //if using QT, enable signals by employing the q_object macro
     Q_OBJECT
   signals:
@@ -133,7 +121,7 @@ namespace VarTypes {
     void mvcEditCompleted() {
       wasEdited(this);
     }
-  #endif
+
   protected:
     virtual inline void lock() const {
       VARTYPE_MACRO_LOCK;
@@ -146,7 +134,7 @@ namespace VarTypes {
     }
   
     #ifndef VDATA_NO_THREAD_SAFETY
-      pthread_mutex_t * _mutex;
+      QMutex * _mutex;
     #endif
     VarTypeFlag _flags;
     string _name;
@@ -264,19 +252,17 @@ namespace VarTypes {
   class SafeVarVal : public virtual CLASS_VARVAL_TYPE {
     protected:
     #ifndef VDATA_NO_THREAD_SAFETY
-      pthread_mutex_t * _mutex;
+      QMutex * _mutex;
     #endif
     public:
     SafeVarVal() {
       #ifndef VDATA_NO_THREAD_SAFETY
-      _mutex=new pthread_mutex_t;
-      pthread_mutex_init((pthread_mutex_t*)_mutex, NULL);
+      _mutex=new QMutex();
       #endif
     }
     virtual ~SafeVarVal()
     {
       #ifndef VDATA_NO_THREAD_SAFETY
-      pthread_mutex_destroy((pthread_mutex_t*)_mutex);
       delete _mutex;
       #endif
     }

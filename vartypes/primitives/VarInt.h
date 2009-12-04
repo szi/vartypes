@@ -35,9 +35,7 @@ namespace VarTypes {
   
   class VarInt : public VarTypeTemplate<VarIntVal> 
   {
-  #ifndef VDATA_NO_QT
     Q_OBJECT
-  #endif
   protected:
   
     SafeVarVal<VarIntVal> _def;

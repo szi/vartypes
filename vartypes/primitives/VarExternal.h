@@ -42,9 +42,7 @@ namespace VarTypes {
   */
   class VarExternal : public VarList
   {
-  #ifndef VDATA_NO_QT
     Q_OBJECT
-  #endif
   protected:
     string filename;
   

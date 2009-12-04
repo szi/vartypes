@@ -61,12 +61,10 @@ namespace VarTypes {
       return new VarSelection();
     //} else if (t==VARTYPE_ID_PROTO_BUFFER) {
     //  return new VarProtoBuffer();
-    #ifndef VDATA_NO_QT
     } else if (t==VARTYPE_ID_QWIDGET) {
       return new VarQWidget();
     } else if (t==VARTYPE_ID_TRIGGER) {
       return new VarTrigger();
-    #endif
     } else {
       if (t >= VARTYPE_ID_MIN_USERTYPE) {
         VarType * v = newUserVarType(t);
