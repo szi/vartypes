@@ -18,6 +18,30 @@
 
 =======================================================================
  Changelog:
+ 12/04/09 - v0.5 - The VarTypes system now lives in the "VarTypes"
+                   namespace.
+                 - renamed "VarData" class to "VarType"
+                 - restructured code to separate between a full "VarType"
+                   and its containing raw data value "VarVal",
+                   allowing better integration in projects
+                   where pure high-performance data-types are required
+                   without the VarData overhead (caused by e.g.
+                   mutexes and the string-label + render-flags
+                   associated with each VarData type).
+                 - VarTypes are now template-instanciated through
+                   "VarTypeTemplate"
+                 - added the VarTypesFactory class, allowing easier,
+                   single-point creation of custom user-defined VarTypes
+                   by inheriting the VarTypesFactory.
+                 - added the clone() and cloneDeep() operators for
+                   all VarVals.
+                 - added binary string store load interface.
+                 - renamed all enumerations using more reasonable
+                   conventions
+                 - changed "renderFlags" to just "Flags" since
+                   they control much more than just render behavior.
+                 - changed string handling in XML i/o for
+                   code safety improvements                   
  4/16/09  - v0.4 - added multi-item selection type
                  - added VarNotifier class to catch change-events
                    for entire sub-trees

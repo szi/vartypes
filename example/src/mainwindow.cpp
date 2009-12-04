@@ -50,7 +50,7 @@ MainWindow::MainWindow()
   v_list1->addChild(v_double2);  //add it to the tree
 
   VarDouble * v_double3 = new VarDouble("double w/ persistent editor");
-  v_double3->addRenderFlags(DT_FLAG_PERSISTENT);
+  v_double3->addFlags(VARTYPE_FLAG_PERSISTENT);
   v_list1->addChild(v_double3); //add it to the tree
 
   //create another variable of type double, with a default value
@@ -72,7 +72,7 @@ MainWindow::MainWindow()
   v_list3->addChild(new VarBool("a boolean"));
 
   VarStringEnum * v_string_enum = new VarStringEnum("food-selector","French Fries");
-  v_string_enum->addRenderFlags(DT_FLAG_PERSISTENT);
+  v_string_enum->addFlags(VARTYPE_FLAG_PERSISTENT);
   v_string_enum->addItem("Cheeseburger");
   v_string_enum->addItem("French Fries");
   v_string_enum->addItem("Ice Cream");
@@ -93,7 +93,7 @@ MainWindow::MainWindow()
   //Note that each vartype has two events:
   // "hasChanged()" will be triggered whenever the internal data changes,
   // no matter whether this happened programmatically or through the GUI
-  // "wasEdited(VarData *)" will be triggered only if the data was changed by the user
+  // "wasEdited(VarType *)" will be triggered only if the data was changed by the user
   // through the GUI. This is usually what you want.
 
   //For this event-example, first let's create a standard node:
@@ -104,7 +104,7 @@ MainWindow::MainWindow()
   //which is defined further below in this file
   //we do so using QT's 'connect' function
   //qt will make sure that everytime a user changes the node, the event will fire.
-  connect(v_double,SIGNAL(wasEdited(VarData *)),this,SLOT(notificationExample(VarData *)));
+  connect(v_double,SIGNAL(wasEdited(VarType *)),this,SLOT(notificationExample(VarType *)));
 
   //finally an example of a subtree that's stored in a separate XML file:
   //simply use VarExternal instead of VarList and provide a filename as constructor.
@@ -142,7 +142,7 @@ MainWindow::MainWindow()
   resize(640,480);
 }
 
-void MainWindow::notificationExample(VarData * node) {
+void MainWindow::notificationExample(VarType * node) {
   printf("Value of node '%s' was changed to: '%s'\n",node->getName().c_str(),node->getString().c_str());
 }
 

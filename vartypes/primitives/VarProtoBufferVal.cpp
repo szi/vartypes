@@ -13,9 +13,8 @@
 //  If not, see <http://www.gnu.org/licenses/>.
 //========================================================================
 /*!
-  \file    VarTypes.cpp
-  \brief   Static constructor of the VarTypes system
+  \file    VarProtoBufferVal.h
+  \brief   C++ Implementation: VarProtoBufferVal
   \author  Stefan Zickler, (C) 2008
 */
-#include "VarTypes.h"
-
+#include "primitives/VarProtoBufferVal.h"

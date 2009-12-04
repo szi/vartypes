@@ -9,6 +9,12 @@ HEADERS += src/mainwindow.h
 SOURCES += ../vartypes/VarTypes.cpp
 HEADERS += ../vartypes/VarTypes.h
 
+SOURCES += ../vartypes/VarTypesFactory.cpp
+HEADERS += ../vartypes/VarTypesFactory.h
+
+SOURCES += ../vartypes/VarTypesInstance.cpp
+HEADERS += ../vartypes/VarTypesInstance.h
+
 SOURCES += ../vartypes/VarXML.cpp
 HEADERS += ../vartypes/VarXML.h
 
@@ -18,8 +24,11 @@ HEADERS += ../vartypes/VarBase64.h
 SOURCES += ../vartypes/VarNotifier.cpp
 HEADERS += ../vartypes/VarNotifier.h
 
-SOURCES += ../vartypes/primitives/VarData.cpp
-HEADERS += ../vartypes/primitives/VarData.h
+SOURCES += ../vartypes/primitives/VarVal.cpp
+HEADERS += ../vartypes/primitives/VarVal.h
+
+SOURCES += ../vartypes/primitives/VarType.cpp
+HEADERS += ../vartypes/primitives/VarType.h
 
 SOURCES += ../vartypes/primitives/VarBool.cpp
 HEADERS += ../vartypes/primitives/VarBool.h
@@ -44,6 +53,9 @@ HEADERS += ../vartypes/primitives/VarExternal.h
 
 SOURCES += ../vartypes/primitives/VarString.cpp
 HEADERS += ../vartypes/primitives/VarString.h
+
+SOURCES += ../vartypes/primitives/VarStringVal.cpp
+HEADERS += ../vartypes/primitives/VarStringVal.h
 
 SOURCES += ../vartypes/primitives/VarBlob.cpp
 HEADERS += ../vartypes/primitives/VarBlob.h

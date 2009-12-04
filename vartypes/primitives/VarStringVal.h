@@ -13,51 +13,61 @@
 //  If not, see <http://www.gnu.org/licenses/>.
 //========================================================================
 /*!
-  \file    VarString.h
-  \brief   C++ Interface: VarString
+  \file    VarStringVal.h
+  \brief   C++ Interface: VarStringVal
   \author  Stefan Zickler, (C) 2008
 */
 
-#ifndef VSTRING_H_
-#define VSTRING_H_
-#include "primitives/VarType.h"
-#include "primitives/VarStringVal.h"
+#ifndef VSTRINGVAL_H_
+#define VSTRINGVAL_H_
+#include "primitives/VarVal.h"
+
 
 namespace VarTypes {
   /*!
-    \class  VarString
-    \brief  This is the string VarType of the VarTypes system
+    \class  VarStringVal
+    \brief  This is the string VarTypeVal of the VarTypes system
     \author Stefan Zickler, (C) 2008
     \see    VarTypes.h
   
     If you don't know what VarTypes are, please see \c VarTypes.h 
   */
-  class VarString : public VarTypeTemplate<VarStringVal> 
+  class VarStringVal : public virtual VarVal
   {
-  #ifndef VDATA_NO_QT
-    Q_OBJECT
-  #endif
   protected:
-    SafeVarVal<VarStringVal> _def;
+  
+    string _val;
   public:
-    VarString(string name="", string default_val="") : VarStringVal(default_val), VarTypeTemplate<VarStringVal>(name)
+  
+    VarStringVal(const string & default_val="") : VarVal()
     {
-      _def.setString(default_val);
+      lock();
+      _val=default_val;
+      unlock();
       changed();
     }
 
-    virtual ~VarString() {}
+    virtual ~VarStringVal() {}
 
-    virtual void resetToDefault()
+    virtual void printdebug() const
     {
-      setString(_def.getString());
+      lock();
+      printf("%s\n",_val.c_str());
+      unlock();
     }
 
-    virtual void setDefault(string val)
-    {
-      _def.setString(val);
-      changed();
+    virtual VarTypeId getType() const { return VARTYPE_ID_STRING; };
+    virtual string getString() const { lock(); string v=_val; unlock(); return v;  };
+    virtual bool   hasValue()  const { return false; };
+    virtual bool setString(const string & val) { lock(); if (_val!=val) {_val=val; unlock(); changed(); return true;} else { unlock(); return false;} };
+
+    virtual VarVal * clone() const {
+      VarStringVal * tmp = new VarStringVal();
+      tmp->setString(getString());
+      return tmp;
     }
+
   };
+
 };
 #endif /*VSTRING_H_*/

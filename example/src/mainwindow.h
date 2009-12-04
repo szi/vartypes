@@ -30,14 +30,15 @@
 #include "gui/VarItem.h"
 #include "gui/VarTreeView.h"
 #include "VarXML.h"
-
+#include "VarTypes.h"
+using namespace VarTypes;
 class MainWindow : public QMainWindow
 {
   Q_OBJECT
 
 protected:
   VarList * root; // our only toplevel node
-  vector<VarData *> world; // our list of toplevel node(s)
+  vector<VarType *> world; // our list of toplevel node(s)
 
   VarTreeView  * tree_view; // the GUI
   VarTreeModel * tmodel;    // the GUI's underlying datamodel
@@ -49,7 +50,7 @@ public:
   virtual void closeEvent(QCloseEvent * event );
 
 public slots:
-  void notificationExample(VarData * node);
+  void notificationExample(VarType * node);
 };
 
 

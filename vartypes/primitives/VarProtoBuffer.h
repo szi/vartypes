@@ -13,42 +13,46 @@
 //  If not, see <http://www.gnu.org/licenses/>.
 //========================================================================
 /*!
-  \file    VarBase64.h
-  \brief   C++ Interface: VarBase64
+  \file    VarProtoBuffer.h
+  \brief   C++ Interface: VarProtoBuffer
   \author  Stefan Zickler, (C) 2008
 */
-//========================================================================
 
-
-#ifndef VARBASE64_H_
-#define VARBASE64_H_
-#include "xml/xmlParser.h"
+#ifndef VPROTOBUFFER_H_
+#define VPROTOBUFFER_H_
+#include "primitives/VarType.h"
+#include "primitives/VarProtoBufferVal.h"
+#include <QSpinBox>
 namespace VarTypes {
-  
   /*!
-    \class  VarBase64
-    \brief  A singleton wrapper to XMLParserBase64Tool
+    \class  VarProtoBuffer
+    \brief  A Vartype for storing integers
     \author Stefan Zickler, (C) 2008
     \see    VarTypes.h
   
-    This is a singleton wrapper to the XMLParserBase64Tool
-    It is used for the en/decoding of binary data to/from xml using the
-    Base64 ascii format.
-  
     If you don't know what VarTypes are, please see \c VarTypes.h 
   */
-  //singleton instanciation of XML base64 encoder
-  class VarBase64
+  template <class CLASS_VARVAL_TYPE, VarTypeId TPL_vartype_id>   
+  class VarProtoBuffer : public VarTypeTemplate<VarProtoBufferVal<CLASS_VARVAL_TYPE, TPL_vartype_id> > 
+  {
+  /*#ifndef VDATA_NO_QT
+    Q_OBJECT
+  #endif*/
+
+  public:
+  
+    virtual inline void changed() {
+      VarTypeTemplate<VarProtoBufferVal<CLASS_VARVAL_TYPE, TPL_vartype_id> >::changed();
+    }
+    VarProtoBuffer(string name="") : VarProtoBufferVal<CLASS_VARVAL_TYPE, TPL_vartype_id>(), VarTypeTemplate<VarProtoBufferVal<CLASS_VARVAL_TYPE, TPL_vartype_id> >(name)
     {
-    public:
-        static VarTypes::XMLParserBase64Tool* getTool();
-    protected:
-        VarBase64();
-        VarBase64(const VarBase64&);
-        VarBase64& operator= (const VarBase64&);
-    private:
-        static VarBase64* pinstance;
-        VarTypes::XMLParserBase64Tool * tool;
+      changed();
+    }
+  
+    virtual ~VarProtoBuffer() {}
+
   };
 };
-#endif /*VARBASE64_H_*/
+
+
+#endif /*VINTEGER_H_*/
