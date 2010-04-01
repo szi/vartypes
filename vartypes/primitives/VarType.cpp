@@ -205,10 +205,10 @@ namespace VarTypes {
       //do a name-based find and update, or append if it does not exist.
       us = findOrAppendChild(parent,"name",getName());
     }
-  
+    
     us.updateAttribute(getName().c_str(),"name","name");
     us.updateAttribute(getTypeName().c_str(),"type","type");
-  
+
     updateAttributes(us);
     updateText(us);
     updateChildren(us);
@@ -235,7 +235,7 @@ namespace VarTypes {
   {
     if (areFlagsSet(VARTYPE_FLAG_NOLOAD)) return;
     //printf("readXML: %s\n",this->getName().c_str());
-    readAttributes(us);
+    if (areFlagsSet(VARTYPE_FLAG_NOLOAD_ATTRIBUTES)==false) readAttributes(us);
     readText(us);
     readChildren(us);
     emit(XMLwasRead(this));
