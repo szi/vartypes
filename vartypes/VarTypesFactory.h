@@ -1,43 +1,42 @@
+//========================================================================
+//  This software is free: you can redistribute it and/or modify
+//  it under the terms of the GNU Lesser General Public License Version 3,
+//  as published by the Free Software Foundation.
 //
-// C++ Interface: VarTypeFactory
+//  This software is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU Lesser General Public License for more details.
 //
-// Description: 
-//
-//
-// Author: Stefan Zickler <szickler@cs.cmu.edu>, (C) 2009
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
+//  You should have received a copy of the GNU Lesser General Public License
+//  Version 3 in the file COPYING that came with this distribution.
+//  If not, see <http://www.gnu.org/licenses/>.
+//========================================================================
 #ifndef VARTYPESFACTORY_H
 #define VARTYPESFACTORY_H
 
   //include base-class
-  #include "primitives/VarType.h"
+  #include "VarType.h"
   
   //include primitives
-  #include "primitives/VarString.h"
-  #include "primitives/VarInt.h"
-  #include "primitives/VarBool.h"
-  #include "primitives/VarDouble.h"
+  #include "VarString.h"
+  #include "VarInt.h"
+  #include "VarBool.h"
+  #include "VarDouble.h"
 
-  #include "primitives/VarBlob.h"
-  #include "primitives/VarList.h"
-  #include "primitives/VarStringEnum.h"
-  #include "primitives/VarSelection.h"
-  #include "primitives/VarExternal.h"
-  #include "primitives/VarQWidget.h"
-  #include "primitives/VarTrigger.h"
-  #include "primitives/VarProtoBuffer.h"
+  #include "VarBlob.h"
+  #include "VarList.h"
+  #include "VarStringEnum.h"
+  #include "VarSelection.h"
+  #include "VarExternal.h"
+  #include "VarQWidget.h"
+  #include "VarTrigger.h"
+  #include "VarProtoBuffer.h"
 
-  #ifdef DT_USE_TYPES_TIMEBASED
-    #include "enhanced/TimeLine.h"
-    #include "enhanced/TimeVar.h"
-  #endif
 
 namespace VarTypes {  
   /**
-    @author Stefan Zickler <szickler@cs.cmu.edu>
+    @author Stefan Zickler
   */
   class VarTypesFactory{
   public:

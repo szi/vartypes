@@ -111,6 +111,9 @@ UI_SOURCES_DIR = src
 RESOURCES += ../vartypes/gui/icons/icons.qrc
 
 INCLUDEPATH += ../vartypes
+INCLUDEPATH += ../vartypes/primitives
+INCLUDEPATH += ../vartypes/gui
+INCLUDEPATH += ../vartypes/xml
 
 win32 {
 	CONFIG+=windows

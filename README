@@ -1,23 +1,31 @@
 ========================================================================
  VarTypes
- Author:  Stefan Zickler <szickler (-at-) cs.cmu.edu>, (C) 2007-2009
+ Author:  Stefan Zickler <http://szickler.net>, (C) 2007-2010
+ Available at: http://code.google.com/p/vartypes/
 ========================================================================
  This software is free: you can redistribute it and/or modify
- it under the terms of the GNU General Public License Version 3,
+ it under the terms of the GNU Lesser General Public License Version 3,
  as published by the Free Software Foundation.
 
  This software is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+ GNU Lesser General Public License for more details.
 
- You should have received a copy of the GNU General Public License
+ You should have received a copy of the GNU Lesser General Public License
  Version 3 in the file COPYING that came with this distribution.
  If not, see <http://www.gnu.org/licenses/>.
 ========================================================================
 
 =======================================================================
  Changelog:
+ 10/25/10 - v0.6 - Re-licensed from GPL to LGPL, so VarTypes can now be
+                   used in commercial applications.
+                 - Added CMake files for building shared library.
+                 - Removed directory prefixes from include directives to
+                   be compliant with cmake's library installation.
+                 - Qt is now a requirement for compilation. Removed all
+                   VDATA_NO_QT statements.
  12/04/09 - v0.5 - The VarTypes system now lives in the "VarTypes"
                    namespace.
                  - renamed "VarData" class to "VarType"
@@ -92,6 +100,10 @@
               All the interesting code on how to construct a vartree and
               GUI is located in example/mainwindow.cpp
 
+              The actual library can be built by running:
+              1) make
+              2) sudo make install
+              Note that cmake is required to build it.
 
  Files:       vartypes/primitives/
                   includes all basic vartype-datastructures
@@ -99,7 +111,7 @@
               vartypes/VarTypes.h
                   is the main header to include to make use of the system
 
-              vartypes/primitives/VarData.h
+              vartypes/primitives/VarType.h
                   is the base-class of all vartypes
 
               vartypes/gui/
@@ -107,10 +119,6 @@
                   them are in development and/or deprecated.
                   You will only need to compile the ones as shown in
                   the example code (see example/example.pro).
-
-             vartypes/enhanced/ and vartypes/experimental/
-                  are some currently experimental time-based types. It is
-                  recommended you don't use or compile these yet.
 
              vartypes/xml/
                   includes the XML file parser/writer which was written by

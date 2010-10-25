@@ -1,14 +1,14 @@
 //========================================================================
 //  This software is free: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License Version 3,
+//  it under the terms of the GNU Lesser General Public License Version 3,
 //  as published by the Free Software Foundation.
 //
 //  This software is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
+//  GNU Lesser General Public License for more details.
 //
-//  You should have received a copy of the GNU General Public License
+//  You should have received a copy of the GNU Lesser General Public License
 //  Version 3 in the file COPYING that came with this distribution.
 //  If not, see <http://www.gnu.org/licenses/>.
 //========================================================================
@@ -20,7 +20,7 @@
 
 #ifndef DATAGROUP_H_
 #define DATAGROUP_H_
-#include "primitives/VarType.h"
+#include "VarType.h"
 #include <vector>
 using namespace std;
 namespace VarTypes {
@@ -38,9 +38,7 @@ namespace VarTypes {
   
   class VarList : public VarType
   {
-  #ifndef VDATA_NO_QT
     Q_OBJECT
-  #endif
   protected:
     vector<VarType *> list;
   signals:
