@@ -85,8 +85,6 @@ set (INSTALLABLE_HEADERS
   ${src_dir}/vartypes/VarTypes.h
   ${src_dir}/vartypes/VarTypesFactory.h
   ${src_dir}/vartypes/gui/VarTreeViewOptions.h
-  ${src_dir}/vartypes/gui/VarItemDelegate.h
-  ${src_dir}/vartypes/gui/VarItem.h
   ${src_dir}/vartypes/xml/xmlParser.h
   ${src_dir}/vartypes/primitives/VarVal.h
   ${src_dir}/vartypes/primitives/VarStringVal.h
