@@ -137,7 +137,7 @@ SET(CMAKE_INSTALL_INCLUDEDIR include CACHE PATH "Output directory for header fil
 SET(CMAKE_INSTALL_DOCDIR share/doc CACHE PATH "Output directory for documentation and license files")
 
 set (target vartypes)
-add_library(${target} SHARED ${MOC_SRCS} ${SRCS})
+add_library(${target} SHARED ${MOC_SRCS} ${SRCS} ${RC_SRCS})
 set_target_properties(${target} PROPERTIES VERSION 0.6.0 SOVERSION 0)
 target_link_libraries(${target} ${libs})
 
