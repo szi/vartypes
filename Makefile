@@ -7,18 +7,21 @@ buildType=Release
 
 all: build
 
-cmake: CMakeLists.txt
+mkbuilddir:
+	test -d $(buildDir) || mkdir -p $(buildDir)
+
+cmake: mkbuilddir CMakeLists.txt
 	cd $(buildDir) && cmake -DCMAKE_BUILD_TYPE=$(buildType) ..
 
 build: cmake
 	$(MAKE) -C $(buildDir)
 
-clean:
+clean: mkbuilddir
 	$(MAKE) -C $(buildDir) clean
 
-install:
+install: mkbuilddir
 	$(MAKE) -C $(buildDir) install
 	
-cleanup_cache:
+cleanup_cache: mkbuilddir
 	cd $(buildDir) && rm -rf *
 	
