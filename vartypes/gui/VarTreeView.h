@@ -60,7 +60,7 @@ namespace VarTypes {
     VarTreeView(VarTreeModel * tmodel=0);
     virtual ~VarTreeView();
     void fitColumns(); //fit columns to data
-    void expandAndFocus(VarType * search); //will focus on and expand an item, if it exists
+    void expandAndFocus(VarPtr search); //will focus on and expand an item, if it exists
   public slots:
     void search(const QString & text);
     void nextSearchResult();

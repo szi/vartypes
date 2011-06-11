@@ -36,19 +36,23 @@ namespace VarTypes {
     If you don't know what VarTypes are, please see \c VarTypes.h 
   */
   
+  class VarList;
+  typedef shared_ptr<VarList> VarListPtr;
+  
   class VarList : public VarType
   {
     Q_OBJECT
   protected:
-    vector<VarType *> list;
+    vector<VarPtr> list;
   signals:
-    void childAdded(VarType * child);
-    void childRemoved(VarType * child);
+    void childAdded(VarPtr child);
+    void childRemoved(VarPtr child);
   public:
     /// Creates an empty VarList
     VarList(string _name="") : VarType(_name) {
     };
     virtual ~VarList() {
+      list.clear();
     };
   
 
@@ -63,10 +67,10 @@ namespace VarTypes {
     virtual void printdebug() const { printf("VarList named %s containing %zu element(s)\n",getName().c_str(), list.size()); }
   
     /// adds a VarType item to the end of the list.
-    int addChild(VarType * child) { lock(); list.push_back(child); emit(childAdded(child)); unlock(); changed(); return (list.size()-1);}
-    bool removeChild(VarType * child) {
+    int addChild(VarPtr child) { lock(); list.push_back(child); emit(childAdded(child)); unlock(); changed(); return (list.size()-1);}
+    bool removeChild(VarPtr child) {
       lock();
-      vector<VarType *> newlist;
+      vector<VarPtr> newlist;
       unsigned int n=list.size();
       bool found=false;
       for (unsigned int i=0;i<n;i++) {
@@ -106,7 +110,6 @@ namespace VarTypes {
       for (int i = 0; i < n ; i++) {
         if (list[i]!=0) {
           list[i]->deleteAllChildren();
-          delete list[i];
         }
       }
       list.clear();
@@ -114,10 +117,10 @@ namespace VarTypes {
     }
 
     /// returns a vector of all children in the order that they occur in internally
-    virtual vector<VarType *> getChildren() const
+    virtual vector<VarPtr> getChildren() const
     {
       lock();
-      vector<VarType *> l = list;
+      vector<VarPtr> l = list;
       unlock();
       return l;
     }
@@ -125,10 +128,9 @@ namespace VarTypes {
     /// Finds a child based on the label of 'other'
     /// If the child is not found then other is returned
     /// However, if the child *is* found then other will be *deleted* and the child will be returned!
-    VarType * findChildOrReplace(VarType * other) {
-      VarType * data = findChild(other->getName());
-      if (data!=0) {
-        delete other;
+    VarPtr findChildOrReplace(VarPtr other) {
+      VarPtr data = findChild(other->getName());
+      if (data.get()!=0) {
         return data;
       } else {
         addChild(other);
@@ -139,11 +141,10 @@ namespace VarTypes {
     /// Finds a child based on the label of 'other'
     /// If the child is not found then other is returned
     /// However, if the child *is* found then other will be *deleted* and the child will be returned!
-    template <class VCLASS> 
-    VCLASS * findChildOrReplace(VCLASS * other) {
-      VCLASS * data = (VCLASS *)findChild(other->getName());
-      if (data!=0) {
-        delete other;
+    template <class VCLASSPTR> 
+    VCLASSPTR findChildOrReplace(VCLASSPTR other) {
+      VCLASSPTR data = (VCLASSPTR)findChild(other->getName());
+      if (data.get()!=0) {
         return data;
       } else {
         addChild(other);

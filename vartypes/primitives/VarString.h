@@ -32,6 +32,10 @@ namespace VarTypes {
   
     If you don't know what VarTypes are, please see \c VarTypes.h 
   */
+  
+  class VarString;
+  typedef shared_ptr<VarString> VarStringPtr;
+  
   class VarString : public VarTypeTemplate<VarStringVal> 
   {
     Q_OBJECT
@@ -41,7 +45,6 @@ namespace VarTypes {
     VarString(string name="", string default_val="") : VarStringVal(default_val), VarTypeTemplate<VarStringVal>(name)
     {
       _def.setString(default_val);
-      changed();
     }
 
     virtual ~VarString() {}

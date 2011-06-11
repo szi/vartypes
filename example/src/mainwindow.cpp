@@ -31,47 +31,47 @@ MainWindow::MainWindow()
   //=====================================================
 
   //instanciate the root:
-  root = new VarList("root node");
+  VarListPtr root(new VarList("root node"));
 
   //add a sub-node:
-  VarList * v_list1 = new VarList("a subtree");
+  VarListPtr v_list1(new VarList("a subtree"));
   root->addChild(v_list1); //let it be a child of the root
 
   //create a trigger-button
-  VarTrigger * v_trigger1 = new VarTrigger("trigger","click me");
+  VarTriggerPtr v_trigger1(new VarTrigger("trigger","click me"));
   v_list1->addChild(v_trigger1); //add it to the tree
 
   //create a variable of type double:
-  VarDouble * v_double1 = new VarDouble("my double");
+  VarDoublePtr v_double1(new VarDouble("my double"));
   v_list1->addChild(v_double1); //add it to the tree
 
   //create another variable of type double, with a default value:
-  VarDouble * v_double2 = new VarDouble("double w/ default",20.0);
+  VarDoublePtr v_double2(new VarDouble("double w/ default", 20.0));
   v_list1->addChild(v_double2);  //add it to the tree
 
-  VarDouble * v_double3 = new VarDouble("double w/ persistent editor");
+  VarDoublePtr v_double3(new VarDouble("double w/ persistent editor"));
   v_double3->addFlags(VARTYPE_FLAG_PERSISTENT);
   v_list1->addChild(v_double3); //add it to the tree
 
   //create another variable of type double, with a default value
   //and min/max ranges
-  VarDouble * v_double4 = new VarDouble("double with min/max",0.5,0.0,1.0);
+  VarDoublePtr v_double4(new VarDouble("double with min/max", 0.5, 0.0, 1.0));
   v_list1->addChild(v_double4);  //add it to the tree
 
-  VarList * v_list2 = new VarList("another subtree");
+  VarListPtr v_list2(new VarList("another subtree"));
   root->addChild(v_list2);
 
-  v_list2->addChild(new VarString("a string"));
+  v_list2->addChild(VarStringPtr(new VarString("a string")));
 
-  v_list2->addChild(new VarString("string w/ default","foobar"));
+  v_list2->addChild(VarStringPtr(new VarString("string w/ default", "foobar")));
 
-  VarList * v_list3 = new VarList("a sub-sub tree");
+  VarListPtr v_list3(new VarList("a sub-sub tree"));
   v_list2->addChild(v_list3);
 
-  v_list3->addChild(new VarInt("an integer"));
-  v_list3->addChild(new VarBool("a boolean"));
+  v_list3->addChild(VarIntPtr(new VarInt("an integer")));
+  v_list3->addChild(VarBoolPtr(new VarBool("a boolean")));
 
-  VarStringEnum * v_string_enum = new VarStringEnum("food-selector","French Fries");
+  VarStringEnumPtr v_string_enum(new VarStringEnum("food-selector", "French Fries"));
   v_string_enum->addFlags(VARTYPE_FLAG_PERSISTENT);
   v_string_enum->addItem("Cheeseburger");
   v_string_enum->addItem("French Fries");
@@ -80,12 +80,12 @@ MainWindow::MainWindow()
   v_list1->addChild(v_string_enum);
 
   //some example access
-  printf("old value of node '%s': %f\n",v_double1->getName().c_str(),v_double1->getDouble());
+  printf("old value of node '%s': %f\n", v_double1->getName().c_str(), v_double1->getDouble());
 
   //some example mutation
   v_double1->setDouble(30.0);
 
-  printf("new value of node '%s': %f\n",v_double1->getName().c_str(),v_double1->getDouble());
+  printf("new value of node '%s': %f\n", v_double1->getName().c_str(), v_double1->getDouble());
 
   //instead of using accessors/mutators you can also wait for user-input
   //by using QT event-handling
@@ -93,26 +93,26 @@ MainWindow::MainWindow()
   //Note that each vartype has two events:
   // "hasChanged()" will be triggered whenever the internal data changes,
   // no matter whether this happened programmatically or through the GUI
-  // "wasEdited(VarType *)" will be triggered only if the data was changed by the user
+  // "wasEdited(VarPtr)" will be triggered only if the data was changed by the user
   // through the GUI. This is usually what you want.
 
   //For this event-example, first let's create a standard node:
-  VarDouble * v_double = new VarDouble("Event Example (change my value and see console!)");
+  VarDoublePtr v_double(new VarDouble("Event Example (change my value and see console!)"));
   root->addChild(v_double);
 
   //now let's hook up the wasEdited event to a local function 'notificationExample'
   //which is defined further below in this file
   //we do so using QT's 'connect' function
   //qt will make sure that everytime a user changes the node, the event will fire.
-  connect(v_double,SIGNAL(wasEdited(VarType *)),this,SLOT(notificationExample(VarType *)));
+  connect(v_double.get(),SIGNAL(wasEdited(VarPtr)),this,SLOT(notificationExample(VarPtr)));
 
   //finally an example of a subtree that's stored in a separate XML file:
   //simply use VarExternal instead of VarList and provide a filename as constructor.
   //that's it!
-  VarExternal * v_ext = new VarExternal("other_settings.xml","this tree has its own XML file");
+  VarExternalPtr v_ext(new VarExternal("other_settings.xml", "this tree has its own XML file"));
   root->addChild(v_ext);
-  v_ext->addChild(new VarInt("another int"));
-  v_ext->addChild(new VarBool("a bool value defaulting to true",true));
+  v_ext->addChild(VarIntPtr(new VarInt("another int")));
+  v_ext->addChild(VarBoolPtr(new VarBool("a bool value defaulting to true",true)));
 
   //=====================================================
   //=======END OF DATA-TREE CONSTRUCTION=================
@@ -142,19 +142,16 @@ MainWindow::MainWindow()
   resize(640,480);
 }
 
-void MainWindow::notificationExample(VarType * node) {
+void MainWindow::notificationExample(VarPtr node) {
   printf("Value of node '%s' was changed to: '%s'\n",node->getName().c_str(),node->getString().c_str());
 }
 
 void MainWindow::closeEvent(QCloseEvent * event ) {
   (void)event;
-  //delete this;
 }
 
 MainWindow::~MainWindow() {
   //write out the XML
   VarXML::write(world,"settings.xml");
 
-  //and exit
-  exit(0);
 }

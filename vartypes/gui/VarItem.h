@@ -48,18 +48,18 @@ protected:
     return ((_flags & f) == f);
   }
   vector<GuiColumnFlag> * cols;
-  VarType * dt;
+  VarPtr dt;
   GuiColumnFlag colflags;
   const VarTreeViewOptions * opts;
-  static void searchTree(QStandardItem * node, const VarType * search, QList<VarItem *> & result);
-  static void updateTree(QStandardItem * node, const vector<VarType *> & children, const VarTreeViewOptions * _opts, bool recurse);
+  static void searchTree(QStandardItem * node, const VarPtr search, QList<VarItem *> & result);
+  static void updateTree(QStandardItem * node, const vector<VarPtr> & children, const VarTreeViewOptions * _opts, bool recurse);
 public:
   GuiColumnFlag getColFlags() const;
   const VarTreeViewOptions * getViewOptions() const;
-  VarType * getVarType();
-  VarItem(VarType * _dt, const VarTreeViewOptions * _opts, GuiColumnFlag myflags);
+  VarPtr getVarType();
+  VarItem(VarPtr _dt, const VarTreeViewOptions * _opts, GuiColumnFlag myflags);
   virtual ~VarItem();
-  void update(VarType * _dt, const VarTreeViewOptions * _opts, GuiColumnFlag myflags);
+  void update(VarPtr _dt, const VarTreeViewOptions * _opts, GuiColumnFlag myflags);
   virtual int type() const;
 friend class VarTreeModel;
 

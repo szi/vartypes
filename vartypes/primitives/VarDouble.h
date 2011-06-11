@@ -33,6 +33,9 @@ namespace VarTypes {
   
     If you don't know what VarTypes are, please see \c VarTypes.h 
   */
+
+  class VarDouble;
+  typedef shared_ptr<VarDouble> VarDoublePtr;
   
   class VarDouble : public VarTypeTemplate<VarDoubleVal> 
   {
@@ -110,7 +113,6 @@ namespace VarTypes {
       setMin(min_val);
       setMax(max_val);
       setDefault(default_val);
-      changed();
     }
   
     virtual ~VarDouble() {}

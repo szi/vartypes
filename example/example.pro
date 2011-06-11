@@ -96,7 +96,7 @@ CONFIG += qt console
 
 #disable debugging for now...
 #(debugging only works if qt-debug symbols are available)
-CONFIG -= debug
+CONFIG += debug
 
 #optional: enable OpenGL support
 #QT     += opengl

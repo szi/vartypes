@@ -56,7 +56,7 @@ namespace VarTypes {
     void editorChangeEvent();
   protected:
     virtual void paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
-    virtual void drawBar ( VarType * dt, QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+    virtual void drawBar ( VarPtr dt, QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
                           const QModelIndex &index) const;
   

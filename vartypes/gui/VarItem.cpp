@@ -21,8 +21,7 @@
 
 namespace VarTypes {
   
-  VarItem::VarItem(VarType * _dt, const VarTreeViewOptions * opts, GuiColumnFlag myflags) {
-    dt=0;
+  VarItem::VarItem(VarPtr _dt, const VarTreeViewOptions * opts, GuiColumnFlag myflags) {
     update(_dt, opts, myflags);
   }
   
@@ -32,13 +31,13 @@ namespace VarTypes {
   
   void VarItem::changeUpdate() {
     update(dt,opts,colflags);
-    vector<VarType *> vd;
+    vector<VarPtr> vd;
     if (dt!=0) {
       //update tree structure if it's a list item.
       if (areColFlagsSet(colflags,GUI_COLUMN_FLAG_TREE_NODE)) {
         if (dt->getType()==VARTYPE_ID_LIST || dt->getType()==VARTYPE_ID_EXTERNAL) {
           if (dt->areFlagsSet(VARTYPE_FLAG_HIDE_CHILDREN)==false) {
-            vd=((VarList*)dt)->getChildren();
+            vd=((VarList*)(dt.get()))->getChildren();
           }
           updateTree(this,vd,opts,true);
         }
@@ -49,15 +48,15 @@ namespace VarTypes {
   int VarItem::type() const {
     return QStandardItem::UserType + 1;
   }
-  void VarItem::update(VarType * _dt, const VarTreeViewOptions * _opts, GuiColumnFlag myflags) {
+  void VarItem::update(VarPtr _dt, const VarTreeViewOptions * _opts, GuiColumnFlag myflags) {
     opts=_opts;
     colflags=myflags;
     setEditable(areColFlagsSet( colflags,GUI_COLUMN_FLAG_EDITABLE) && (_dt->getType() != VARTYPE_ID_LIST && _dt->getType() != VARTYPE_ID_EXTERNAL ));
     if (_dt!=dt && _dt!=0) {
       if (dt != 0) {
-        disconnect(dt,SIGNAL(hasChanged(VarType *)),this,SLOT(changeUpdate()));
+        disconnect(dt.get(),SIGNAL(hasChanged(VarPtr)),this,SLOT(changeUpdate()));
       }
-      connect(_dt,SIGNAL(hasChanged(VarType *)),this,SLOT(changeUpdate()));
+      connect(_dt.get(),SIGNAL(hasChanged(VarPtr)),this,SLOT(changeUpdate()));
       dt=_dt;
     }
     if (dt!=0) {
@@ -85,7 +84,7 @@ namespace VarTypes {
     }
   }
   
-  void VarItem::searchTree(QStandardItem * node, const VarType * search, QList<VarItem *> & result) {
+  void VarItem::searchTree(QStandardItem * node, const VarPtr search, QList<VarItem *> & result) {
     int n=node->rowCount();
     QStandardItem * tmp;
     for (int i=0;i<n;i++) {
@@ -95,11 +94,11 @@ namespace VarTypes {
     }
   }
   
-  void VarItem::updateTree(QStandardItem * node, const vector<VarType *> & children, const VarTreeViewOptions * _opts, bool recurse) {
+  void VarItem::updateTree(QStandardItem * node, const vector<VarPtr> & children, const VarTreeViewOptions * _opts, bool recurse) {
     //FIRST OF ALL filter out child_list that are invisible to the user or that are null-pointers
-    vector<VarType *> child_list;
+    vector<VarPtr> child_list;
     for (unsigned int i=0;i<children.size();i++) {
-      VarType * d = children[i];
+      VarPtr d = children[i];
       if (d!=0 && d->areFlagsSet(VARTYPE_FLAG_HIDDEN)==false) {
         child_list.push_back(d);
       }
@@ -130,7 +129,7 @@ namespace VarTypes {
     }
   }
   
-  VarType * VarItem::getVarType() {
+  VarPtr VarItem::getVarType() {
     return dt;
   }
   

@@ -42,10 +42,10 @@ namespace VarTypes {
     virtual ~VarXML();
   
     /// write a VarType node (and all of its children) to an xml file
-    static void write(VarType * rootVar, string filename);
+    static void write(VarPtr rootVar, string filename);
   
     /// write a vector of VarType nodes (and all of their children) to an xml file
-    static void write(vector<VarType *> rootVars, string filename);
+    static void write(vector<VarPtr> rootVars, string filename);
   
     /// read a VarType-tree from an xml file and return its root nodes as a vector.
     ///
@@ -55,7 +55,7 @@ namespace VarTypes {
     /// If a tree does pre-exist then the read function will update the data of
     /// any existing nodes, or create new nodes if they are missing in the existing
     /// tree.
-    static vector<VarType *> read(vector<VarType *> existing_nodes, string filename);
+    static vector<VarPtr> read(vector<VarPtr> existing_nodes, string filename);
   };
 };
 #endif /*VARXML_H_*/

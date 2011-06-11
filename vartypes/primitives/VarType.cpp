@@ -32,8 +32,6 @@ namespace VarTypes {
     _name=name;
     _flags=VARTYPE_FLAG_NONE;
     unlock();
-    changed();
-  
   }
   
   VarType::~VarType()
@@ -90,9 +88,9 @@ namespace VarTypes {
     return (answer);
   }
   
-  vector<VarType *> VarType::getChildren() const
+  vector<VarPtr> VarType::getChildren() const
   {
-    vector<VarType *> v;
+    vector<VarPtr> v;
     return v;
   }
   
@@ -176,7 +174,7 @@ namespace VarTypes {
   {
     //wipe out all children of type var...
     deleteAllVarChildren(us);
-    vector<VarType *> v = getChildren();
+    vector<VarPtr> v = getChildren();
     for (unsigned int i=0;i<v.size();i++) {
       //printf("writing: %d/%d (%s)\n",i,v.size(),v[i]->getName().c_str());
       v[i]->writeXML(us,true);
@@ -212,7 +210,7 @@ namespace VarTypes {
     updateAttributes(us);
     updateText(us);
     updateChildren(us);
-    emit(XMLwasWritten(this));
+    emit(XMLwasWritten(this->shared_from_this()));
   }
   
   
@@ -238,24 +236,24 @@ namespace VarTypes {
     if (areFlagsSet(VARTYPE_FLAG_NOLOAD_ATTRIBUTES)==false) readAttributes(us);
     readText(us);
     readChildren(us);
-    emit(XMLwasRead(this));
+    emit(XMLwasRead(this->shared_from_this()));
   }
   
   void VarType::loadExternal() {
   
   }
   
-  vector<VarType *> VarType::readChildrenHelper(XMLNode & parent , vector<VarType *> existing_children, bool only_update_existing, bool blind_append)
+  vector<VarPtr> VarType::readChildrenHelper(XMLNode & parent , vector<VarPtr> existing_children, bool only_update_existing, bool blind_append)
   {
     //this again does non-destructive integration
     //As a result we update any predefined structures and
     //append any types that don't exist yet.
-    vector<VarType *> result=existing_children;
+    vector<VarPtr> result=existing_children;
     int n=parent.nChildNode("Var");
     int i,myIterator=0;
   
     //iterate through them and check if we already exist
-    set<VarType *> unmatched_children;
+    set<VarPtr> unmatched_children;
     for (unsigned int j=0;j<existing_children.size();j++) {
       unmatched_children.insert(existing_children[j]);
     }
@@ -287,7 +285,7 @@ namespace VarTypes {
           //the item did not already exist in the children...
           if (only_update_existing==false) {
             //create new node and append it:
-            VarType * td= VarTypesInstance::getFactory()->newVarType(type);
+            VarPtr td= VarTypesInstance::getFactory()->newVarType(type);
             td->setName(sname);
             td->readXML(t);
             result.push_back(td);
@@ -299,16 +297,16 @@ namespace VarTypes {
       }
     }
     //---fix for recursing tree that's not defined in xml yet:
-    queue<VarType *> _queue;
-    for (set<VarType *>::iterator iter = unmatched_children.begin(); iter!=unmatched_children.end(); iter++) {
+    queue<VarPtr> _queue;
+    for (set<VarPtr>::iterator iter = unmatched_children.begin(); iter!=unmatched_children.end(); iter++) {
       if (*iter!=0) _queue.push(*iter);
     }
     //recurse all unmatched children to make sure we load all externals:
     while(_queue.empty()==false) {
-      VarType * d = _queue.front();
+      VarPtr d = _queue.front();
       _queue.pop();
       d->loadExternal();
-      vector<VarType *> children = d->getChildren();
+      vector<VarPtr> children = d->getChildren();
       int s=children.size();
       for (int i=0;i<s;i++) {
         if (children[i]!=0) _queue.push(children[i]);
@@ -320,13 +318,13 @@ namespace VarTypes {
   
   // Finds a child based on its label
   // Returns 0 if not found.
-  VarType * VarType::findChild(string label) const {
-    vector<VarType *> children = getChildren();
+  VarPtr VarType::findChild(string label) const {
+    vector<VarPtr> children = getChildren();
     unsigned int s = children.size();
     for (unsigned int i=0;i<s;i++) {
       if (children[i]->getName().compare(label)==0) return (children[i]);
     }
-    return 0;
+    return VarPtr();
   }
   
   

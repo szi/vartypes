@@ -43,6 +43,9 @@ namespace VarTypes {
   
     If you don't know what VarTypes are, please see \c VarTypes.h 
   */
+
+  class VarBlob;
+  typedef shared_ptr<VarBlob> VarBlobPtr;
   
   class VarBlob : public VarType
   {
@@ -64,7 +67,6 @@ namespace VarTypes {
         _dsize=maxsize;
         _dsize_limited=true;
       }
-      changed();
     }
   
     VarBlob(int maxsize=0, string name="") : VarType(name)
@@ -97,7 +99,7 @@ namespace VarTypes {
     }
   
     virtual void clearData() {
-      if (_dpointer != 0) delete _dpointer;
+      if (_dpointer != 0) delete[] _dpointer;
       _dsize=0;
       changed();
     }

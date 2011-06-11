@@ -47,7 +47,10 @@ namespace VarTypes {
   
     If you don't know what VarTypes are, please see \c VarTypes.h 
   */
+
   
+  class VarQWidget;
+  typedef shared_ptr<VarQWidget> VarQWidgetPtr;
   
   class VarQWidget : public VarType
   {
@@ -61,7 +64,6 @@ namespace VarTypes {
     {
       _val=default_val;
       _flags |= VARTYPE_FLAG_PERSISTENT;
-      changed();
     }
   
     virtual ~VarQWidget() {

@@ -48,21 +48,21 @@ namespace VarTypes {
   public slots:
       void changeSlotOtherChange();
   protected slots:
-      void changeSlot(VarType * item);
+      void changeSlot(VarPtr item);
   signals:
-      void changeOccurred(VarType * item);
+      void changeOccurred(VarPtr item);
   public:
       VarNotifier();
   
       ~VarNotifier();
   
-      void addItem(VarType * item, VarNotificationType notification_type=VarNotificationChanged);
+      void addItem(VarPtr item, VarNotificationType notification_type=VarNotificationChanged);
   
-      void addRecursive(VarType * item, VarNotificationType notification_type=VarNotificationChanged, bool include_root=true); 
+      void addRecursive(VarPtr item, VarNotificationType notification_type=VarNotificationChanged, bool include_root=true); 
   
-      void removeItem(VarType *item);
+      void removeItem(VarPtr item);
   
-      void removeRecursive(VarType * item, bool include_root=true);
+      void removeRecursive(VarPtr item, bool include_root=true);
   
       /// This will report true if any events have happened, but it will not reset the event counter
       /// It is encouraged to use hasChanged() instead, if possible.

@@ -74,18 +74,18 @@ namespace VarTypes {
     return result;
   }
   
-  QList<VarItem *> VarTreeModel::findItems(const VarType * item) const {
+  QList<VarItem *> VarTreeModel::findItems(const VarPtr item) const {
     QList<VarItem *> result;
     if (item!=0) VarItem::searchTree(invisibleRootItem(), item, result);
     return result;
   }
   
-  void VarTreeModel::setRootItems(vector<VarType *> items) {
+  void VarTreeModel::setRootItems(vector<VarPtr> items) {
     VarItem::updateTree(invisibleRootItem(),items,getViewOptions(),true);
   }
   
-  void VarTreeModel::setRootItem(VarType * item) {
-    vector<VarType *> v;
+  void VarTreeModel::setRootItem(VarPtr item) {
+    vector<VarPtr> v;
     v.push_back(item);
     setRootItems(v); 
   }

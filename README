@@ -1,6 +1,6 @@
 ========================================================================
  VarTypes
- Author:  Stefan Zickler <http://szickler.net>, (C) 2007-2010
+ Author:  Stefan Zickler <http://szickler.net>, (C) 2007-2011
  Available at: http://code.google.com/p/vartypes/
 ========================================================================
  This software is free: you can redistribute it and/or modify
@@ -19,6 +19,7 @@
 
 =======================================================================
  Changelog:
+ 06/10/11 - v0.7 - Changed to shared_ptr model for all VarTypes.
  10/25/10 - v0.6 - Re-licensed from GPL to LGPL, so VarTypes can now be
                    used in commercial applications.
                  - Added CMake files for building shared library.

@@ -37,8 +37,7 @@ class MainWindow : public QMainWindow
   Q_OBJECT
 
 protected:
-  VarList * root; // our only toplevel node
-  vector<VarType *> world; // our list of toplevel node(s)
+  vector<VarPtr> world; // our list of toplevel node(s)
 
   VarTreeView  * tree_view; // the GUI
   VarTreeModel * tmodel;    // the GUI's underlying datamodel
@@ -50,7 +49,7 @@ public:
   virtual void closeEvent(QCloseEvent * event );
 
 public slots:
-  void notificationExample(VarType * node);
+  void notificationExample(VarPtr node);
 };
 
 

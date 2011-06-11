@@ -37,6 +37,10 @@ namespace VarTypes {
   
     If you don't know what VarTypes are, please see \c VarTypes.h 
   */
+  
+  class VarTrigger;
+  typedef shared_ptr<VarTrigger> VarTriggerPtr;
+  
   class VarTrigger : public VarType
   {
     Q_OBJECT
@@ -52,7 +56,7 @@ namespace VarTypes {
       emit(signalTriggered());
       unlock();
       changed();
-      wasEdited((VarType*)this);
+      wasEdited(this->shared_from_this());
     }
   
   public:
@@ -64,7 +68,6 @@ namespace VarTypes {
       label=_label;
       _counter=0;
       _flags |= VARTYPE_FLAG_PERSISTENT;
-      changed();
     }
   
     virtual ~VarTrigger() {

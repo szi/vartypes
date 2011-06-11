@@ -38,7 +38,7 @@ namespace VarTypes {
     if (index.isValid() && index.model()!=0) {
       VarItem * item=(VarItem*)(((VarTreeModel*)index.model())->itemFromIndex (index));
       if (item!=0) {
-        VarType * dt=item->getVarType();
+        VarPtr dt=item->getVarType();
         if (dt!=0) {
           /*if ((dt->getFlags() & VARTYPE_FLAG_PERSISTENT) != 0x00) {
             //there's a persistent editor on top!
@@ -57,7 +57,7 @@ namespace VarTypes {
   }
   
   
-  void VarItemDelegate::drawBar (VarType * dt, QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const {
+  void VarItemDelegate::drawBar (VarPtr dt, QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const {
     (void)index;
     //  QItemDelegate::drawBackground(painter,option,index);
   
@@ -118,7 +118,7 @@ namespace VarTypes {
     if (index.isValid() && index.model()!=0) {
       VarItem * item=(VarItem*)(((VarTreeModel*)index.model())->itemFromIndex (index));
           if (item!=0) {
-        VarType * dt=item->getVarType();
+        VarPtr dt=item->getVarType();
         if (dt!=0) {
           QWidget * w;
           w=dt->createEditor(this,parent,option);
@@ -135,7 +135,7 @@ namespace VarTypes {
     if (index.isValid() && index.model()!=0) {
       VarItem * item=(VarItem*)(((VarTreeModel*)index.model())->itemFromIndex (index));
       if (item!=0) {
-        VarType * dt=item->getVarType();
+        VarPtr dt=item->getVarType();
         if (dt!=0) {
           //printf("Setting Editor for: %s\n",dt->getName().c_str());
           if (editor!=0 && ((dt->getFlags() & VARTYPE_FLAG_READONLY) != 0x00)) {
@@ -160,7 +160,7 @@ namespace VarTypes {
         if (parent != 0) {
           QStandardItem *item = parent->child(index.row(), index.column());
           if (item!=0) {
-            VarType * dt=((VarItem*)item)->getVarType();
+            VarPtr dt=((VarItem*)item)->getVarType();
             if (dt!=0) {
               return dt->sizeHint(this,option,index);
             }
@@ -178,7 +178,7 @@ namespace VarTypes {
     if (index.isValid() && model!=0) {
       VarItem * item=(VarItem*)(((VarTreeModel*)model)->itemFromIndex (index));
       if (item!=0) {
-        VarType * dt=item->getVarType();
+        VarPtr dt=item->getVarType();
         if (dt!=0) {
           dt->setModelData(this,editor);
           return;

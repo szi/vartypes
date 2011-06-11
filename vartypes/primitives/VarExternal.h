@@ -40,6 +40,10 @@ namespace VarTypes {
   
     If you don't know what VarTypes are, please see \c VarTypes.h 
   */
+  
+  class VarExternal;
+  typedef shared_ptr<VarExternal> VarExternalPtr;
+  
   class VarExternal : public VarList
   {
     Q_OBJECT

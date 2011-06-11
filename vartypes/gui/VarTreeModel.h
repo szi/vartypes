@@ -50,11 +50,11 @@ namespace VarTypes {
     VarTreeModel();
     virtual ~VarTreeModel();
     void updateHeader();
-    void setRootItems(vector<VarType *> items);
-    void setRootItem(VarType * item);
+    void setRootItems(vector<VarPtr> items);
+    void setRootItem(VarPtr item);
     virtual const QStandardItem * itemPrototype () const;
     QList<VarItem *> findItems( const QString & text, bool case_sensitive=false ) const;
-    QList<VarItem *> findItems( const VarType * item) const;
+    QList<VarItem *> findItems( const VarPtr item) const;
   
   };
 };

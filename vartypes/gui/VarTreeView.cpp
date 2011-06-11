@@ -101,7 +101,7 @@ namespace VarTypes {
         if (index.isValid() && index.model()!=0) {
           VarItem * item=(VarItem*)(((VarTreeModel*)index.model())->itemFromIndex (index));
           if (item!=0) {
-            VarType * dt=item->getVarType();
+            VarPtr dt=item->getVarType();
             if (dt!=0) {
               if ((dt->getFlags() & VARTYPE_FLAG_PERSISTENT) != 0x00) {
                 tw->openPersistentEditor(index);
@@ -139,7 +139,7 @@ namespace VarTypes {
     tw->resizeColumnToContents(1);
   }
   
-  void VarTreeView::expandAndFocus(VarType * search) {
+  void VarTreeView::expandAndFocus(VarPtr search) {
     if (model==0) return;
     QList<VarItem *> res=model->findItems(search);
     if (res.size() > 0) {

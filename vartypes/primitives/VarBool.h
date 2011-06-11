@@ -33,6 +33,9 @@ namespace VarTypes {
   
     If you don't know what VarTypes are, please see \c VarTypes.h 
   */
+
+  class VarBool;
+  typedef shared_ptr<VarBool> VarBoolPtr;
   
   class VarBool : public VarTypeTemplate<VarBoolVal>
   {
@@ -46,7 +49,6 @@ namespace VarTypes {
       lock();
       _flags |= VARTYPE_FLAG_PERSISTENT;
       unlock();
-      changed();
     }
 
     virtual ~VarBool() {}

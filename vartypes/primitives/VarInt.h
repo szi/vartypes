@@ -33,6 +33,9 @@ namespace VarTypes {
     If you don't know what VarTypes are, please see \c VarTypes.h 
   */
   
+  class VarInt;
+  typedef shared_ptr<VarInt> VarIntPtr;
+  
   class VarInt : public VarTypeTemplate<VarIntVal> 
   {
     Q_OBJECT
@@ -116,7 +119,6 @@ namespace VarTypes {
       setMin(min_val);
       setMax(max_val);
       setDefault(default_val);
-      changed();
     }
   
     virtual ~VarInt() {}

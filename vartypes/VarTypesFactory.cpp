@@ -23,9 +23,9 @@ namespace VarTypes {
   {
   }
   
-  VarType * VarTypesFactory::newUserVarType(VarTypeId t) {
+  VarPtr VarTypesFactory::newUserVarType(VarTypeId t) {
     (void)t;
-    return 0;
+    return VarPtr();
   }
   
   VarVal * VarTypesFactory::newUserVarVal(VarTypeId t) {
@@ -43,32 +43,32 @@ namespace VarTypes {
     return "undefined";
   } 
   
-  VarType * VarTypesFactory::newVarType(VarTypeId t) {
+  VarPtr VarTypesFactory::newVarType(VarTypeId t) {
     if (t==VARTYPE_ID_BOOL) {
-      return new VarBool();
+      return(VarPtr(new VarBool()));
     } else if (t==VARTYPE_ID_INT) {
-      return new VarInt();
+      return(VarPtr(new VarInt()));
     } else if (t==VARTYPE_ID_DOUBLE) {
-      return new VarDouble();
+      return(VarPtr(new VarDouble()));
     } else if (t==VARTYPE_ID_STRING) {
-      return new VarString();
+      return(VarPtr(new VarString()));
     } else if (t==VARTYPE_ID_BLOB) {
-      return new VarBlob();
+      return(VarPtr(new VarBlob()));
     } else if (t==VARTYPE_ID_EXTERNAL) {
-      return new VarExternal();
+      return(VarPtr(new VarExternal()));
     } else if (t==VARTYPE_ID_LIST) {
-      return new VarList();
+      return(VarPtr(new VarList()));
     } else if (t==VARTYPE_ID_STRINGENUM) {
-      return new VarStringEnum();
+      return(VarPtr(new VarStringEnum()));
     } else if (t==VARTYPE_ID_SELECTION) {
-      return new VarSelection();
+      return(VarPtr(new VarSelection()));
     } else if (t==VARTYPE_ID_QWIDGET) {
-      return new VarQWidget();
+      return(VarPtr(new VarQWidget()));
     } else if (t==VARTYPE_ID_TRIGGER) {
-      return new VarTrigger();
+      return(VarPtr(new VarTrigger()));
     } else {
       if (t >= VARTYPE_ID_MIN_USERTYPE) {
-        VarType * v = newUserVarType(t);
+        VarPtr v = newUserVarType(t);
         if (v==0) {
           fprintf(stderr,"Error: failed to construct unknown user-defined VarType with VarTypeId: %d (type name: %s).\n",t,typeToString(t).c_str());
           fprintf(stderr,"Note, if you were trying to define your own VarType, you need to overload the newUserVarType(...) function from the VarTypesFactory class.\n");
@@ -80,7 +80,7 @@ namespace VarTypes {
         fprintf(stderr,"that your VarTypeId is greater than %d, as all other values are reserved ",VARTYPE_ID_MIN_USERTYPE);
         fprintf(stderr,"for future native types.\n");
         fprintf(stderr,"Otherwise, this error could have been caused if you are trying to load a VarTypes file that was created with a newer version, containing types that were not yet implemented in this version.\n");
-        return 0;
+        return VarPtr();
       }
     }
   }

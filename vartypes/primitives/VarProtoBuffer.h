@@ -31,7 +31,8 @@ namespace VarTypes {
     \see    VarTypes.h
   
     If you don't know what VarTypes are, please see \c VarTypes.h 
-  */
+  */ 
+  
   template <class CLASS_VARVAL_TYPE, VarTypeId TPL_vartype_id>   
   class VarProtoBuffer : public VarTypeTemplate<VarProtoBufferVal<CLASS_VARVAL_TYPE, TPL_vartype_id> > 
   {
@@ -43,7 +44,6 @@ namespace VarTypes {
     }
     VarProtoBuffer(string name="") : VarProtoBufferVal<CLASS_VARVAL_TYPE, TPL_vartype_id>(), VarTypeTemplate<VarProtoBufferVal<CLASS_VARVAL_TYPE, TPL_vartype_id> >(name)
     {
-      changed();
     }
   
     virtual ~VarProtoBuffer() {}

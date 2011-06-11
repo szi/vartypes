@@ -44,13 +44,13 @@ namespace VarTypes {
     virtual ~VarTypesFactory();
   
   protected:
-    virtual VarType * newUserVarType(VarTypeId t);
+    virtual VarPtr newUserVarType(VarTypeId t);
     virtual VarVal  * newUserVarVal(VarTypeId t);
     virtual VarTypeId stringToUserType(const string & s);
     virtual string    userTypeToString(VarTypeId t);
   
   public:
-    VarType   * newVarType(VarTypeId t);
+    VarPtr      newVarType(VarTypeId t);
     VarVal    * newVarVal(VarTypeId t);
     VarTypeId   stringToType(const string & s);
     string      typeToString(VarTypeId t);

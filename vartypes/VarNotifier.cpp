@@ -65,10 +65,10 @@ namespace VarTypes {
     mutex.lock();
     changed=true;
     mutex.unlock();
-    emit changeOccurred(0);
+    emit changeOccurred(VarPtr());
   }
   
-  void VarNotifier::changeSlot(VarType * item) {
+  void VarNotifier::changeSlot(VarPtr item) {
     mutex.lock();
     changed=true;
     mutex.unlock();
@@ -87,7 +87,7 @@ namespace VarTypes {
     QHash<VarType *, VarNotificationType>::iterator iter;
     iter = senders.find(item);
     if (iter != senders.constEnd()) {
-      disconnect(item, 0, this, SLOT(changeSlot(VarType *)));
+      disconnect(item, 0, this, SLOT(changeSlot(VarPtr)));
       senders.erase(iter);
     }
   }
@@ -103,7 +103,7 @@ namespace VarTypes {
       } else {
         //item exists, but with wrong notification type:
         //fix it:
-        disconnect(item, 0, this, SLOT(changeSlot(VarType *)));
+        disconnect(item, 0, this, SLOT(changeSlot(VarPtr)));
         iter.value() = notification_type;
       }
     } else {
@@ -111,51 +111,51 @@ namespace VarTypes {
     }
     //connect it with correct notification type:
     if (notification_type==VarNotificationChanged) {
-      connect(item, SIGNAL(hasChanged(VarType *)), this, SLOT(changeSlot(VarType *)));
+      connect(item, SIGNAL(hasChanged(VarPtr)), this, SLOT(changeSlot(VarPtr)));
     } else {
-      connect(item, SIGNAL(wasEdited(VarType*)), this, SLOT(changeSlot(VarType *)));
+      connect(item, SIGNAL(wasEdited(VarType*)), this, SLOT(changeSlot(VarPtr)));
     }
   }
   
-  void VarNotifier::addItem(VarType * item, VarNotificationType notification_type) {
+  void VarNotifier::addItem(VarPtr item, VarNotificationType notification_type) {
     mutex.lock();
-    internalNonMutexedAddItem(item, notification_type);
+    internalNonMutexedAddItem(item.get(), notification_type);
     mutex.unlock();
   }
   
-  void VarNotifier::addRecursive(VarType * item, VarNotificationType notification_type, bool include_root) {
+  void VarNotifier::addRecursive(VarPtr item, VarNotificationType notification_type, bool include_root) {
     mutex.lock();
     QQueue<VarType *> queue;
-    if (item!=0) queue.enqueue(item);
+    if (item.get()!=0) queue.enqueue(item.get());
     while(queue.isEmpty()==false) {
       VarType * d = queue.dequeue();
-      if ((d!=item) || include_root) internalNonMutexedAddItem(d,notification_type);
-      vector<VarType *> children = d->getChildren();
+      if ((d!=item.get()) || include_root) internalNonMutexedAddItem(d,notification_type);
+      vector<VarPtr> children = d->getChildren();
       int s=children.size();
       for (int i=0;i<s;i++) {
-        if (children[i]!=0) queue.enqueue(children[i]);
+        if (children[i].get()!=0) queue.enqueue(children[i].get());
       }
     }
     mutex.unlock();
   }
   
-  void VarNotifier::removeItem(VarType *item) {
+  void VarNotifier::removeItem(VarPtr item) {
     mutex.lock();
-    internalNonMutexedRemoveItem(item);
+    internalNonMutexedRemoveItem(item.get());
     mutex.unlock();
   }
   
-  void VarNotifier::removeRecursive(VarType * item, bool include_root) {
+  void VarNotifier::removeRecursive(VarPtr item, bool include_root) {
     mutex.lock();
     QQueue<VarType *> queue;
-    if (item!=0) queue.enqueue(item);
+    if (item.get()!=0) queue.enqueue(item.get());
     while(queue.isEmpty()==false) {
       VarType * d = queue.dequeue();
-      if ((d!=item) || include_root) internalNonMutexedRemoveItem(item);
-      vector<VarType *> children = d->getChildren();
+      if ((d!=item.get()) || include_root) internalNonMutexedRemoveItem(item.get());
+      vector<VarPtr> children = d->getChildren();
       int s=children.size();
       for (int i=0;i<s;i++) {
-        if (children[i]!=0) queue.enqueue(children[i]);
+        if (children[i].get()!=0) queue.enqueue(children[i].get());
       }
     }
     mutex.unlock();

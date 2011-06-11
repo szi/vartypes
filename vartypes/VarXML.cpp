@@ -25,13 +25,13 @@ namespace VarTypes {
   VarXML::VarXML() {};
   VarXML::~VarXML() {};
   
-  void VarXML::write(VarType * rootVar, string filename)
+  void VarXML::write(VarPtr rootVar, string filename)
   {
-    vector<VarType *> v;
+    vector<VarPtr> v;
     v.push_back(rootVar);
     write(v,filename);
   }
-  void VarXML::write(vector<VarType *> rootVars, string filename)
+  void VarXML::write(vector<VarPtr> rootVars, string filename)
   {
   
     XMLNode root = XMLNode::openFileHelper(filename.c_str(),"VarXML");
@@ -42,7 +42,7 @@ namespace VarTypes {
     root.writeToFile(filename.c_str());
   }
   
-  vector<VarType *> VarXML::read(vector<VarType *> existing_nodes, string filename)
+  vector<VarPtr> VarXML::read(vector<VarPtr> existing_nodes, string filename)
   {
     XMLNode root = XMLNode::openFileHelper(filename.c_str(),"VarXML");
     return VarType::readChildrenHelper(root ,existing_nodes, false, false);

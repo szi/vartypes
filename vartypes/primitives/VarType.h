@@ -42,6 +42,12 @@
     #include <QMutex>
   #endif
 
+//Would use QSharedPointer instead of the tr1/boost versions, but enable_shared_from_this is not yet implemented in Qt which is a functionality that we need as we have vartypes generating events with pointers to themselves.
+#include <tr1/memory>
+using std::tr1::shared_ptr;
+using std::tr1::enable_shared_from_this;
+
+
 namespace VarTypes {
   class VarItemDelegate;
   
@@ -82,7 +88,9 @@ namespace VarTypes {
   
   
   //if using QT, trigger the hasChanged() signal
-  #define VARTYPE_MACRO_CHANGED emit(hasChanged(this));
+  //Note: The reason why we need a try/catch is that if shared_from_this is called when the vartype has not yet been wrapped in a shared_ptr, then a bad weak_ptr exception is thrown.
+  //      This happens, for example when changed() is called from within a constructor, before the vartype was wrapped by a shared_ptr.
+  #define VARTYPE_MACRO_CHANGED try{ emit(hasChanged(this->shared_from_this())); } catch(...) {} ;
   
   #ifndef VDATA_NO_THREAD_SAFETY
     #define VARTYPE_MACRO_LOCK _mutex->lock();
@@ -92,9 +100,15 @@ namespace VarTypes {
     #define VARTYPE_MACRO_UNLOCK
   #endif
   
+  class VarType;
+  typedef shared_ptr<VarType> VarPtr;
+
+  
+//   class QEnableSharedFromThis : public enable_shared_from_this<VarType> {
+//   };
   
   //if using QT, inherit QObject as a base
-  class VarType : public QObject, public virtual VarVal
+  class VarType : public QObject, public virtual VarVal, public virtual enable_shared_from_this<VarType>
   {
   
 
@@ -104,23 +118,23 @@ namespace VarTypes {
     /// This signal is triggered when any data or flag of this VarType has changed.
     /// This includes changes that were done programmatically, as well through a GUI.
     /// It also includes changes to render-flags or other meta-data.
-    void hasChanged(VarType *);
+    void hasChanged(VarPtr);
   
     /// This signal is triggered when data of this VarType has been edited by a user through an MVC viewer.
     /// Unlike /c hasChanged(), this signal is not necessarily triggered if this data was internally changed.
     /// So, if you would like to catch all events, you should use /c hasChanged() instead.
-    void wasEdited(VarType *); //this signal is only triggered when a value was edited by a user through a MVC view-instance.
+    void wasEdited(VarPtr); //this signal is only triggered when a value was edited by a user through a MVC view-instance.
   
     /// This signal is triggered if data was written from an xml node
-    void XMLwasRead(VarType *);
+    void XMLwasRead(VarPtr);
   
     /// This signal is triggered if data was written to an xml node
-    void XMLwasWritten(VarType *);
+    void XMLwasWritten(VarPtr);
   
   public slots:
     /// A slot to receive signals from a model-view system that editing of this item was just completed.
     void mvcEditCompleted() {
-      wasEdited(this);
+      wasEdited(this->shared_from_this());
     }
 
   protected:
@@ -155,7 +169,7 @@ namespace VarTypes {
   
     /// Return a list of children nodes of this VarType type.
     /// This can be an empty vector if the node does not have any children.
-    virtual vector<VarType *> getChildren() const;
+    virtual vector<VarPtr> getChildren() const;
   
     /// removes all children, by actually deleting them in memory
     /// note that this is recursive.
@@ -195,10 +209,10 @@ namespace VarTypes {
   
     /// Finds a child based on its label
     /// Returns 0 if not found
-    VarType * findChild(string label) const;
+    VarPtr findChild(string label) const;
   
     /// TODO: implement this function. It might be useful for some purposes.
-    /// VarType * merge(VarType * structure, VarType * data);
+    /// VarPtr merge(VarPtr structure, VarPtr data);
   
   
   #ifndef VDATA_NO_XML
@@ -223,7 +237,7 @@ namespace VarTypes {
     static void deleteAllVarChildren(XMLNode & node);
   
     /// A helper function to read a list of children from XML and convert it to a vector of VarType nodes.
-    static vector<VarType *> readChildrenHelper(XMLNode & parent , vector<VarType *> existing_children, bool only_update_existing, bool blind_append);
+    static vector<VarPtr> readChildrenHelper(XMLNode & parent , vector<VarPtr> existing_children, bool only_update_existing, bool blind_append);
   
     /// Write the contents of this VarType node to an XMLNode.
     void writeXML(XMLNode & parent, bool blind_append=true);

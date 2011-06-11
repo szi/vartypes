@@ -38,11 +38,15 @@ namespace VarTypes {
   
     If you don't know what VarTypes are, please see \c VarTypes.h 
   */
+  
+  class VarStringEnum;
+  typedef shared_ptr<VarStringEnum> VarStringEnumPtr;
+  
   class VarStringEnum : public VarType
   {
     Q_OBJECT
   protected:
-    vector<VarType *> list;
+    vector<VarPtr> list;
     string selected;
     string default_string;
   public:
@@ -52,10 +56,7 @@ namespace VarTypes {
     }
 
     virtual ~VarStringEnum() {
-      int n = list.size();
-      for (int i=n-1;i>=0;i--) {
-        delete list[(unsigned int)i];
-      }
+      list.clear();
     }
 
     virtual string getString() const { return selected; }
@@ -80,7 +81,7 @@ namespace VarTypes {
       int res=-1;
       unsigned int n = list.size();
       for (unsigned int i=0;i<n;i++) {
-        if (((VarString *)(list[i]))->getString().compare(selected)==0) {
+        if (((VarString *)(list[i].get()))->getString().compare(selected)==0) {
           res= i;
           break;
         }
@@ -96,7 +97,7 @@ namespace VarTypes {
       if (i > (list.size() - 1)) {
         result=default_string;
       } else {
-        result=((VarString *)(list[i]))->getString();
+        result=((VarString *)(list[i].get()))->getString();
       }
       if (result!=selected) {
         selected=result;
@@ -124,7 +125,7 @@ namespace VarTypes {
     if (index > (list.size() - 1)) {
       result="";
     } else {
-      result=((VarString *)(list[index]))->getString();
+      result=((VarString *)(list[index].get()))->getString();
     }
     unlock();
     return result;
@@ -137,12 +138,11 @@ namespace VarTypes {
         for (unsigned int i=list.size();i<size;i++) {
           char tmp[64];
           sprintf(tmp,"%zu",list.size());
-          list.push_back(new VarString(tmp ,default_label));
+          list.push_back(VarPtr(new VarString(tmp ,default_label)));
           list[list.size()-1]->addFlags(VARTYPE_FLAG_HIDDEN);
         }
       } else if (list.size() > size) {
         for (unsigned int i=list.size();i>size;i--) {
-          delete list[i-1];
           list.pop_back();
         }
       }
@@ -155,10 +155,10 @@ namespace VarTypes {
     string result="";
     lock();
     if (index < list.size()) {
-      if (((VarString *)(list[index]))->getString().compare(selected)==0) {
+      if (((VarString *)(list[index].get()))->getString().compare(selected)==0) {
         selected=label;
       }
-      ((VarString *)(list[index]))->setString(label);
+      ((VarString *)(list[index].get()))->setString(label);
       
     }
     
@@ -172,7 +172,7 @@ namespace VarTypes {
       lock();
       char tmp[64];
       sprintf(tmp,"%zu",list.size());
-      list.push_back(new VarString(tmp ,label));
+      list.push_back(VarPtr(new VarString(tmp ,label)));
       list[list.size()-1]->addFlags(VARTYPE_FLAG_HIDDEN);
       unlock();
       changed();
@@ -181,10 +181,10 @@ namespace VarTypes {
   
     virtual VarTypeId getType() const { return VARTYPE_ID_STRINGENUM; } ;
   
-    virtual vector<VarType *> getChildren() const
+    virtual vector<VarPtr> getChildren() const
     {
       lock();
-      vector<VarType *> l = list;
+      vector<VarPtr> l = list;
       unlock();
       return l;
     }
