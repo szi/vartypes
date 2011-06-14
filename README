@@ -20,6 +20,7 @@
 =======================================================================
  Changelog:
  06/10/11 - v0.7 - Changed to shared_ptr model for all VarTypes.
+                 - VarTypes now requires the tr1 C++ extensions.
  10/25/10 - v0.6 - Re-licensed from GPL to LGPL, so VarTypes can now be
                    used in commercial applications.
                  - Added CMake files for building shared library.
@@ -87,6 +88,9 @@
               string enumerations, lists, binary data, and triggers.
               More complex types can be added easily by inheriting the
               VarData base-class.
+
+ Requires:    cmake, Qt >=4.5, C++ tr1 libraries (automatically supplied by
+              many modern compilers).
 
  Usage:       An example including the QT4 GUI is located in the example/
               directory. To build, make sure you have QT >= 4.3 installed
