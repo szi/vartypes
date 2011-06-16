@@ -136,7 +136,7 @@ SET(CMAKE_INSTALL_DOCDIR share/doc CACHE PATH "Output directory for documentatio
 
 set (target vartypes)
 add_library(${target} SHARED ${MOC_SRCS} ${SRCS} ${RC_SRCS})
-set_target_properties(${target} PROPERTIES VERSION 0.6.0 SOVERSION 0)
+set_target_properties(${target} PROPERTIES VERSION 0.7.0 SOVERSION 1)
 target_link_libraries(${target} ${libs})
 
 INSTALL(FILES ${INSTALLABLE_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/vartypes)
