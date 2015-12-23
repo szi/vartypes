@@ -20,7 +20,7 @@
 
 =======================================================================
  Changelog:
- 12/15/15 - v0.8 - Fixed Issue #2 (VarIntVal constructor was checking
+ 12/23/15 - v0.8 - Fixed Issue #2 (VarIntVal constructor was checking
                    _val before it was set)
                  - Made shared_ptr explicitly use std::tr1 namespace
                  - Cleanup in VarTypesFactory
@@ -105,23 +105,22 @@
  Requires:    cmake, Qt >=4.5, C++ tr1 libraries (automatically supplied by
               many modern compilers).
 
- Usage:       An example including the QT4 GUI is located in the example/
-              directory. To build, make sure you have QT >= 4.3 installed
-              then cd into "example/" and run "qmake example.pro"
-              (note that on some distributions it's "qmake-qt4" instead
-              of just qmake. In fact qmake might link to qmake3 which
-              will fail miserably on the QT4-style .pro file).
-              Qmake will generate a standard makefile.
-              Then run "make" and it should build the program.
-              You can then run the program "./example"
-
-              All the interesting code on how to construct a vartree and
-              GUI is located in example/mainwindow.cpp
-
-              The actual library can be built by running:
+ Usage:       The VarTypes library can be built by running:
               1) make
               2) sudo make install
               Note that cmake is required to build it.
+              
+              An example including the QT4 GUI is located in the example/
+              directory. It is built automatically along with the library
+              (but is not installed as part of the install command).
+              
+              To run the example:
+              
+              build/vartype_example
+
+              All the interesting code on how to construct a vartree and
+              GUI is located in example/src/mainwindow.cpp
+              
 
  Files:       vartypes/primitives/
                   includes all basic vartype-datastructures
@@ -133,10 +132,7 @@
                   is the base-class of all vartypes
 
               vartypes/gui/
-                  includes all GUI related QT widgets. Note that some of
-                  them are in development and/or deprecated.
-                  You will only need to compile the ones as shown in
-                  the example code (see example/example.pro).
+                  includes all GUI related QT widgets.
 
              vartypes/xml/
                   includes the XML file parser/writer which was written by
