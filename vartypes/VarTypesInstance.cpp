@@ -17,26 +17,27 @@ namespace VarTypes {
   
   VarTypesInstance* VarTypesInstance::pinstance = 0;// initialize pointer
   
-  VarTypesFactory* VarTypesInstance::getFactory ()
+  VarTypesFactoryPtr VarTypesInstance::getFactory ()
   {
     if (pinstance == 0)  // is it the first call?
     {
       pinstance = new VarTypesInstance(); // create sole instance
     }
-    if (pinstance->_factory==0) {
-      pinstance->_factory= new VarTypesFactory();
+    if (pinstance->_factory.get()==0) {
+      pinstance->_factory= VarTypesFactoryPtr(new VarTypesFactory());
     }
     return pinstance->_factory; // address of sole instance
   }
   
-  bool VarTypesInstance::setFactory (VarTypesFactory* factory)
+  bool VarTypesInstance::setFactory (VarTypesFactoryPtr factory)
   {
     if (pinstance == 0)  // is it the first call?
     {
       pinstance = new VarTypesInstance(); // create sole instance
     }
-    if (pinstance->_factory==0) {
-      pinstance->_factory= factory;
+    if (pinstance->_factory.get()==0) {
+      factory->registerUserVarTypes();
+      pinstance->_factory = factory;
       return true;
     } else {
       fprintf(stderr,"ERROR: Unable to set VarTypes factory with a VarTypesInstance::setFactory() call because getFactory() has already been called!\n");
@@ -47,6 +48,5 @@ namespace VarTypes {
   
   VarTypesInstance::VarTypesInstance()
   {
-    _factory = 0;
   }
 };

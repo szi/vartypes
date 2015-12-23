@@ -55,7 +55,6 @@ namespace VarTypes {
       unlock();
     }
 
-    virtual VarTypeId getType() const { return VARTYPE_ID_STRING; };
     virtual string getString() const { lock(); string v=_val; unlock(); return v;  };
     virtual bool   hasValue()  const { return false; };
     virtual bool setString(const string & val) { lock(); if (_val!=val) {_val=val; unlock(); changed(); return true;} else { unlock(); return false;} };

@@ -33,16 +33,16 @@ namespace VarTypes {
     If you don't know what VarTypes are, please see \c VarTypes.h 
   */ 
   
-  template <class CLASS_VARVAL_TYPE, VarTypeId TPL_vartype_id>   
-  class VarProtoBuffer : public VarTypeTemplate<VarProtoBufferVal<CLASS_VARVAL_TYPE, TPL_vartype_id> > 
+  template <class CLASS_VARVAL_TYPE>   
+  class VarProtoBuffer : public VarTypeTemplate<VarProtoBufferVal<CLASS_VARVAL_TYPE> > 
   {
 
   public:
   
     virtual inline void changed() {
-      VarTypeTemplate<VarProtoBufferVal<CLASS_VARVAL_TYPE, TPL_vartype_id> >::changed();
+      VarTypeTemplate<VarProtoBufferVal<CLASS_VARVAL_TYPE> >::changed();
     }
-    VarProtoBuffer(string name="") : VarProtoBufferVal<CLASS_VARVAL_TYPE, TPL_vartype_id>(), VarTypeTemplate<VarProtoBufferVal<CLASS_VARVAL_TYPE, TPL_vartype_id> >(name)
+    VarProtoBuffer(string name="") : VarProtoBufferVal<CLASS_VARVAL_TYPE>(), VarTypeTemplate<VarProtoBufferVal<CLASS_VARVAL_TYPE> >(name)
     {
     }
   

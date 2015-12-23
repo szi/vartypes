@@ -41,15 +41,15 @@ namespace VarTypes {
   class VarTypesInstance
     {
     public:
-        static VarTypesFactory* getFactory();
-        static bool setFactory(VarTypesFactory * factory);
+        static VarTypesFactoryPtr getFactory();
+        static bool setFactory(VarTypesFactoryPtr factory);
     protected:
         VarTypesInstance();
         VarTypesInstance(const VarTypesInstance&);
         VarTypesInstance& operator= (const VarTypesInstance&);
     private:
         static VarTypesInstance* pinstance;
-        VarTypesFactory * _factory;
+        VarTypesFactoryPtr  _factory;
   };
 };  
 #endif

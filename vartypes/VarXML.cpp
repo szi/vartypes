@@ -25,26 +25,49 @@ namespace VarTypes {
   VarXML::VarXML() {};
   VarXML::~VarXML() {};
   
-  void VarXML::write(VarPtr rootVar, string filename)
+  void VarXML::write(VarPtr rootVar, string filename, VarTypeImportExportOptions & options)
   {
+    options.setBasename(filename);
+    options.blind_append=true;
+    options.errors_found=false;
     vector<VarPtr> v;
     v.push_back(rootVar);
     write(v,filename);
   }
-  void VarXML::write(vector<VarPtr> rootVars, string filename)
+  void VarXML::write(vector<VarPtr> rootVars, string filename, VarTypeImportExportOptions & options)
   {
-  
+    options.setBasename(filename);
+    options.blind_append=true;
+    options.errors_found=false;
     XMLNode root = XMLNode::openFileHelper(filename.c_str(),"VarXML");
     VarType::deleteAllVarChildren(root);
     for (unsigned int i=0;i<rootVars.size();i++) {
-      rootVars[i]->writeXML(root,true);
+      rootVars[i]->writeXML(root,options);
     }
     root.writeToFile(filename.c_str());
   }
   
-  vector<VarPtr> VarXML::read(vector<VarPtr> existing_nodes, string filename)
+  vector<VarPtr> VarXML::read(vector<VarPtr> existing_nodes, string filename, VarTypeImportExportOptions & options)
   {
+    options.setBasename(filename);
+    options.blind_append=false;
+    options.errors_found=false;
     XMLNode root = XMLNode::openFileHelper(filename.c_str(),"VarXML");
-    return VarType::readChildrenHelper(root ,existing_nodes, false, false);
+    
+    return VarType::readChildrenHelper(root ,existing_nodes, false, options.blind_append, options);
   }
+
+    std::string VarXML::getXML(vector<VarPtr> rootVars, VarTypeImportExportOptions & options) {
+        options.setBasename("");
+        options.blind_append=true;
+        options.errors_found=false;
+        XMLNode root = XMLNode::openFileHelper("","VarXML");
+        VarType::deleteAllVarChildren(root);
+        for (unsigned int i=0;i<rootVars.size();i++) {
+            rootVars[i]->writeXML(root,options);
+        }
+        return std::string(root.createXMLString());
+
+    }
+    
 };

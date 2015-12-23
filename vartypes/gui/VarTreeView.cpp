@@ -102,7 +102,7 @@ namespace VarTypes {
           VarItem * item=(VarItem*)(((VarTreeModel*)index.model())->itemFromIndex (index));
           if (item!=0) {
             VarPtr dt=item->getVarType();
-            if (dt!=0) {
+            if (dt.get()!=0) {
               if ((dt->getFlags() & VARTYPE_FLAG_PERSISTENT) != 0x00) {
                 tw->openPersistentEditor(index);
               } /*else {
@@ -133,6 +133,12 @@ namespace VarTypes {
     
     
   }*/
+
+  void VarTreeView::setColumnWidth(int idx, int width)
+  {
+    tw->setColumnWidth(idx, width);
+  }
+
   
   void VarTreeView::fitColumns() {
     tw->resizeColumnToContents(0);

@@ -40,7 +40,7 @@ namespace VarTypes {
   */
   
   class VarStringEnum;
-  typedef shared_ptr<VarStringEnum> VarStringEnumPtr;
+  typedef std::tr1::shared_ptr<VarStringEnum> VarStringEnumPtr;
   
   class VarStringEnum : public VarType
   {
@@ -179,7 +179,6 @@ namespace VarTypes {
       return (list.size()-1);
     }
   
-    virtual VarTypeId getType() const { return VARTYPE_ID_STRINGENUM; } ;
   
     virtual vector<VarPtr> getChildren() const
     {
@@ -191,10 +190,10 @@ namespace VarTypes {
   
   #ifndef VDATA_NO_XML
   protected:
-    virtual void readChildren(XMLNode & us)
+    virtual void readChildren(XMLNode & us, VarTypeImportExportOptions & options)
     {
       if (areFlagsSet(VARTYPE_FLAG_NOLOAD_ENUM_CHILDREN)==false) {
-        list=readChildrenHelper(us, list, false, false);
+        list=readChildrenHelper(us, list, false, false, options);
         for (unsigned int i = 0; i < list.size();i++) {
           list[i]->addFlags(VARTYPE_FLAG_HIDDEN);
         }

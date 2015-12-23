@@ -1,7 +1,8 @@
 ========================================================================
  VarTypes
- Author:  Stefan Zickler <http://szickler.net>, (C) 2007-2011
- Available at: http://code.google.com/p/vartypes/
+ Author:  Stefan Zickler <http://szickler.net>, (C) 2007-2015
+ Available at: https://github.com/szi/vartypes
+ (Formerly at: http://code.google.com/p/vartypes/)
 ========================================================================
  This software is free: you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License Version 3,
@@ -19,6 +20,16 @@
 
 =======================================================================
  Changelog:
+ 12/15/15 - v0.8 - Made shared_ptr explicitly use std::tr1 namespace
+                 - Cleanup in VarTypesFactory
+                 - Added import/export options
+                 - More coherent use of shared_ptr
+                 - Added VarAny wrapper
+                 - Added runtime loader interface, for at-runtime
+                   loading of vartype .so's (optional feature)
+                 - Changed emit to Q_EMIT
+                 - Integrated example into CMakeLists.txt and removed
+                   .pro build file.
  06/10/11 - v0.7 - Changed to shared_ptr model for all VarTypes.
                  - VarTypes now requires the tr1 C++ extensions.
  10/25/10 - v0.6 - Re-licensed from GPL to LGPL, so VarTypes can now be

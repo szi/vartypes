@@ -45,7 +45,7 @@ namespace VarTypes {
   */
 
   class VarBlob;
-  typedef shared_ptr<VarBlob> VarBlobPtr;
+  typedef std::tr1::shared_ptr<VarBlob> VarBlobPtr;
   
   class VarBlob : public VarType
   {
@@ -137,7 +137,7 @@ namespace VarTypes {
     }
 
   
-    virtual VarTypeId getType() const { return VARTYPE_ID_BLOB; };
+    //virtual VarTypeId getType() const { return VARTYPE_ID_BLOB; };
     virtual string getString() const { return "Pointer";  };
     virtual bool hasValue()  const { return false; };
     virtual bool setString(const string & val) { (void)val; return false; };

@@ -35,9 +35,9 @@ namespace VarTypes {
   */
 
   class VarDouble;
-  typedef shared_ptr<VarDouble> VarDoublePtr;
+  typedef std::tr1::shared_ptr<VarDouble> VarDoublePtr;
   
-  class VarDouble : public VarTypeTemplate<VarDoubleVal> 
+  class VarDouble : public VarTypeTemplate<VarDoubleVal>
   {
     Q_OBJECT
   protected:
@@ -45,6 +45,7 @@ namespace VarTypes {
     double _min;
     double _max;
   public:
+
     /// get the minimum accepted value if this data-type has a limited range
     /// \see setMin(...)
     /// \see hasMin()

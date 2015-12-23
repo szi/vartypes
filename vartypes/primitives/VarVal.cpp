@@ -31,12 +31,6 @@ namespace VarTypes {
     return clone();
   }
   
-  /// Get the type of this VarType node.
-  VarTypeId VarVal::getType() const { return VARTYPE_ID_UNDEFINED; };
-  
-  /// Get the string label of the type of this VarType node.
-  string VarVal::getTypeName() const { return VarTypesInstance::getFactory()->typeToString(getType()) ;};
-  
   void VarVal::printdebug() const {
   };
   
@@ -85,6 +79,21 @@ namespace VarTypes {
     setSerialString(val);
   }
   
+  
+  bool VarVal::serializeContentsFromStream(istream& stream, const string & extension)
+  {
+    std::string buf;
+    stream >> buf;
+    setBinarySerialString(buf);
+    return true;
+  }
+
+  void VarVal::serializeContentsToStream(ostream& stream) const
+  {
+    std::string buf;
+    getBinarySerialString(buf);
+    stream << buf;
+  }
   
   //the following functions are especially useful for plotting:
   bool VarVal::hasValue() const

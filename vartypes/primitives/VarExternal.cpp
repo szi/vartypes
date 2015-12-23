@@ -41,24 +41,24 @@ VarExternal::~VarExternal()
 {
 }
 
-void VarExternal::loadExternal() {
+void VarExternal::loadExternal(VarTypeImportExportOptions & options) {
   lock();
   //load file to empty parent
   int before=list.size();
   XMLNode parent = XMLNode::openFileHelper(filename.c_str(),"VarXML");
-  list=readChildrenHelper(parent, list, false, false);
+  list=readChildrenHelper(parent, list, false, false, options);
   int after=list.size();
   if (after > before) {
     for (int i=before; i < after; i++) {
-        emit(childAdded(list[i]));
+        Q_EMIT(childAdded(list[i]));
     }
   }
   changed();
   unlock();
 }
 
-void VarExternal::readChildren(XMLNode & us) {
+void VarExternal::readChildren(XMLNode & us, VarTypeImportExportOptions & options) {
   (void)us;
-  loadExternal();
+  loadExternal(options);
 }
 };

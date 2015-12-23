@@ -20,6 +20,7 @@
 #include <vector>
 #include <limits.h>
 #include <float.h>
+#include <typeinfo>
 
 #ifdef WIN32
   typedef unsigned char uint8_t;
@@ -29,27 +30,6 @@ using namespace std;
 
 namespace VarTypes {
 
-  typedef uint8_t VarTypeId;
-  enum VarTypeIdEnum {
-    VARTYPE_ID_UNDEFINED=0,
-    VARTYPE_ID_BOOL,
-    VARTYPE_ID_INT,
-    VARTYPE_ID_DOUBLE,
-    VARTYPE_ID_STRING,
-    VARTYPE_ID_BLOB,
-    VARTYPE_ID_EXTERNAL,
-    VARTYPE_ID_VECTOR2D,
-    VARTYPE_ID_VECTOR3D,
-    VARTYPE_ID_TIMEVAR,
-    VARTYPE_ID_TIMELINE,
-    VARTYPE_ID_LIST,
-    VARTYPE_ID_STRINGENUM,
-    VARTYPE_ID_SELECTION,
-    VARTYPE_ID_TRIGGER,
-    VARTYPE_ID_QWIDGET,
-    VARTYPE_ID_COUNT,
-    VARTYPE_ID_MIN_USERTYPE=128
-  };
   /**
     @author Stefan Zickler
   */
@@ -78,13 +58,7 @@ namespace VarTypes {
       /// Creates a clone of this item (similar to clone()), except that this will produce a DEEP-COPY,
       /// which recursively clones the entire data-hierarchy.
       virtual VarVal * deepClone() const;
-  
-      /// Get the type of this VarType node.
-      virtual VarTypeId getType() const;
-    
-      /// Get the string label of the type of this VarType node.
-      virtual string getTypeName() const;
-    
+      
       /// Print out debugging information of this node to console.
       /// Usually this means the actually data of the node will be printed.
       virtual void printdebug() const;
@@ -111,6 +85,17 @@ namespace VarTypes {
       /// This will be used to store the node to XML.
       virtual void getSerialString(string & val) const;
 
+      /// Serialize contents from istream
+      virtual bool serializeContentsFromStream(std::istream & stream, const std::string & extension=".bin");
+      
+      /// Serialize contents to ostream and return appropriate filename extension
+      virtual void serializeContentsToStream(std::ostream & stream) const;
+      
+      /// Get desired filename extension for serialized contents
+      virtual string getSerializedContentsFilenameExtension() const {
+        return ".bin";
+      }
+      
       /// and its less efficient, deprecated non-virtual wrapper:
       /// DO NOT OVERLOAD THIS:
       string getSerialString() const;

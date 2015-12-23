@@ -42,7 +42,7 @@ namespace VarTypes {
   */
   
   class VarExternal;
-  typedef shared_ptr<VarExternal> VarExternalPtr;
+  typedef std::tr1::shared_ptr<VarExternal> VarExternalPtr;
   
   class VarExternal : public VarList
   {
@@ -58,8 +58,6 @@ namespace VarTypes {
     VarExternal(string _filename="", string _name="");
   
     virtual ~VarExternal();
-    virtual VarTypeId getType() const { return VARTYPE_ID_EXTERNAL; } ;
-  
   
   #ifndef VDATA_NO_XML
   protected:
@@ -75,19 +73,19 @@ namespace VarTypes {
       VarList::readAttributes(us);
     }
   
-    virtual void updateChildren(XMLNode & us) const
+    virtual void updateChildren(XMLNode & us, VarTypeImportExportOptions & options) const
     {
       (void)us;
       XMLNode parent = XMLNode::openFileHelper(filename.c_str(),"VarXML");
       //and update it...
-      VarList::updateChildren(parent);
+      VarList::updateChildren(parent, options);
       //save file to empty parent
       parent.writeToFile(filename.c_str());
     }
   
-    virtual void readChildren(XMLNode & us);
+    virtual void readChildren(XMLNode & us, VarTypeImportExportOptions & options);
   
-    virtual void loadExternal();
+    virtual void loadExternal(VarTypeImportExportOptions & options);
   
   #endif
   };

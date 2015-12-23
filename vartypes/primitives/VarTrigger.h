@@ -39,7 +39,7 @@ namespace VarTypes {
   */
   
   class VarTrigger;
-  typedef shared_ptr<VarTrigger> VarTriggerPtr;
+  typedef std::tr1::shared_ptr<VarTrigger> VarTriggerPtr;
   
   class VarTrigger : public VarType
   {
@@ -53,7 +53,7 @@ namespace VarTypes {
     void trigger() {
       lock();
       _counter++;
-      emit(signalTriggered());
+      Q_EMIT(signalTriggered());
       unlock();
       changed();
       wasEdited(this->shared_from_this());
@@ -121,21 +121,25 @@ namespace VarTypes {
       changed();
     }
   
-    virtual VarTypeId getType() const { return VARTYPE_ID_TRIGGER; };
-  
     //Qt model/view gui stuff:
     public:
     virtual QWidget * createEditor(const VarItemDelegate * delegate, QWidget *parent, const QStyleOptionViewItem &option) {
       (void)delegate;
       (void)option;
       QPushButton * tmp=new QPushButton(parent);
+      //tmp->setEnabled(!areFlagsSet(VarTypes::VARTYPE_FLAG_READONLY));
       tmp->setText(QString::fromStdString(label));
       connect(tmp,SIGNAL(clicked()),this,SLOT(trigger()));
       return tmp;
     }
     virtual void setEditorData(const VarItemDelegate * delegate, QWidget *editor) const {
+      //lock();
+      QPushButton * button = (QPushButton*)editor;
+      //button->setEnabled(!areFlagsSet(VarTypes::VARTYPE_FLAG_READONLY));
+      button->setText(QString::fromStdString(label));
+      //unlock();
       (void)delegate;
-      (void)editor;
+      
     }
     virtual void setModelData(const VarItemDelegate * delegate, QWidget *editor) {
       (void)delegate;

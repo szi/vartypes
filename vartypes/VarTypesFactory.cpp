@@ -14,165 +14,87 @@
 //========================================================================
 #include "VarTypesFactory.h"
 
-namespace VarTypes {
-  VarTypesFactory::VarTypesFactory()
-  {
-  }
-  
-  VarTypesFactory::~VarTypesFactory()
-  {
-  }
-  
-  VarPtr VarTypesFactory::newUserVarType(VarTypeId t) {
-    (void)t;
-    return VarPtr();
-  }
-  
-  VarVal * VarTypesFactory::newUserVarVal(VarTypeId t) {
-    (void)t;
-    return 0;
-  }
-  
-  VarTypeId VarTypesFactory::stringToUserType(const string & s) {
-    (void)s;
-    return VARTYPE_ID_UNDEFINED;
-  }
-  
-  string VarTypesFactory::userTypeToString(VarTypeId t) {
-    (void)t;
-    return "undefined";
-  } 
-  
-  VarPtr VarTypesFactory::newVarType(VarTypeId t) {
-    if (t==VARTYPE_ID_BOOL) {
-      return(VarPtr(new VarBool()));
-    } else if (t==VARTYPE_ID_INT) {
-      return(VarPtr(new VarInt()));
-    } else if (t==VARTYPE_ID_DOUBLE) {
-      return(VarPtr(new VarDouble()));
-    } else if (t==VARTYPE_ID_STRING) {
-      return(VarPtr(new VarString()));
-    } else if (t==VARTYPE_ID_BLOB) {
-      return(VarPtr(new VarBlob()));
-    } else if (t==VARTYPE_ID_EXTERNAL) {
-      return(VarPtr(new VarExternal()));
-    } else if (t==VARTYPE_ID_LIST) {
-      return(VarPtr(new VarList()));
-    } else if (t==VARTYPE_ID_STRINGENUM) {
-      return(VarPtr(new VarStringEnum()));
-    } else if (t==VARTYPE_ID_SELECTION) {
-      return(VarPtr(new VarSelection()));
-    } else if (t==VARTYPE_ID_QWIDGET) {
-      return(VarPtr(new VarQWidget()));
-    } else if (t==VARTYPE_ID_TRIGGER) {
-      return(VarPtr(new VarTrigger()));
-    } else {
-      if (t >= VARTYPE_ID_MIN_USERTYPE) {
-        VarPtr v = newUserVarType(t);
-        if (v==0) {
-          fprintf(stderr,"Error: failed to construct unknown user-defined VarType with VarTypeId: %d (type name: %s).\n",t,typeToString(t).c_str());
-          fprintf(stderr,"Note, if you were trying to define your own VarType, you need to overload the newUserVarType(...) function from the VarTypesFactory class.\n");
-        }
-        return v;
-      } else {
-        fprintf(stderr,"Error: failed to construct unknown VarType with VarTypeId: %d (type name: %s).\n",t,typeToString(t).c_str());
-        fprintf(stderr,"Note if you were trying to define your own VarType, you need to ensure ");
-        fprintf(stderr,"that your VarTypeId is greater than %d, as all other values are reserved ",VARTYPE_ID_MIN_USERTYPE);
-        fprintf(stderr,"for future native types.\n");
-        fprintf(stderr,"Otherwise, this error could have been caused if you are trying to load a VarTypes file that was created with a newer version, containing types that were not yet implemented in this version.\n");
-        return VarPtr();
-      }
-    }
-  }
-  
-  VarVal * VarTypesFactory::newVarVal(VarTypeId t) {
-    //TODO: add VarVal creation.
-    (void)t;
-    return 0;
-  }
 
-  VarTypeId VarTypesFactory::stringToType(const string & s) {
-    if (s=="bool") {
-      return VARTYPE_ID_BOOL;
-    } else if (s=="double") {
-      return VARTYPE_ID_DOUBLE;
-    } else if (s=="int") {
-      return VARTYPE_ID_INT;
-    } else if (s=="string") {
-      return VARTYPE_ID_STRING;
-    } else if (s=="blob") {
-      return VARTYPE_ID_BLOB;
-    } else if (s=="external") {
-      return VARTYPE_ID_EXTERNAL;
-    } else if (s=="vector2d") {
-      return VARTYPE_ID_VECTOR2D;
-    } else if (s=="vector3d") {
-      return VARTYPE_ID_VECTOR3D;
-    } else if (s=="timeline") {
-      return VARTYPE_ID_TIMELINE;
-    } else if (s=="timevar") {
-      return VARTYPE_ID_TIMEVAR;
-    } else if (s=="list") {
-      return VARTYPE_ID_LIST;
-    } else if (s=="stringenum") {
-      return VARTYPE_ID_STRINGENUM;
-    } else if (s=="selection") {
-      return VARTYPE_ID_SELECTION;
-    } else if (s=="trigger") {
-      return VARTYPE_ID_TRIGGER;
-    } else if (s=="qwidget") {
-      return VARTYPE_ID_QWIDGET;
-    } else {
-      VarTypeId v=stringToUserType(s);
-      if (v==VARTYPE_ID_UNDEFINED) return v;
-      if (v < VARTYPE_ID_MIN_USERTYPE) {
-        fprintf(stderr,"Warning! stringToUserType needs to return a typeId greater or equal than %d (was %d for label '%s')\n",VARTYPE_ID_MIN_USERTYPE ,v, s.c_str());
-        return VARTYPE_ID_UNDEFINED;
-      } else {
-        return v;
-      }
-    }
+namespace VarTypes {
+VarTypesFactory::VarTypesFactory()
+{
+  registerVarTypes();
+}
+
+VarTypesFactory::~VarTypesFactory()
+{
+}
+
+bool VarTypesFactory::isRegisteredType(const std::string& label)
+{
+  std::map<std::string, tVarTypeConstructor>::iterator iter = map_string_to_constructor.find(label);
+  if (iter==map_string_to_constructor.end()) {
+    return false;
+  } else {
+    return true; 
   }
+}
+
+VarPtr VarTypesFactory::newVarType(const std::string & label)
+{
+  std::map<std::string, tVarTypeConstructor>::iterator iter = map_string_to_constructor.find(label);
+  if (iter==map_string_to_constructor.end()) {
+    VarPtr ptr;
+    return ptr;
+  } else {
+    return (iter->second) ();
+  }
+}
+
+void VarTypesFactory::registerUserVarTypes()
+{
+  ///to add you own vartypes, overload this function and register any of your types (they each need to inherit from the VarType class).
+  ///To register a type, as a shortcut, you can use the mRegisterVarType(Typename) macro, or you can use the actual function:
+  ///registerVarType<Typename>("Typename");
+}
+
+void VarTypesFactory::registerVarTypes()
+{
   
-  string VarTypesFactory::typeToString(VarTypeId vt)
-  {
-    if (vt==VARTYPE_ID_BOOL) {
-      return "bool";
-    } else if (vt==VARTYPE_ID_DOUBLE) {
-      return "double";
-    } else if (vt==VARTYPE_ID_INT) {
-      return "int";
-    } else if (vt==VARTYPE_ID_STRING) {
-      return "string";
-    } else if (vt==VARTYPE_ID_EXTERNAL) {
-      return "external";
-    } else if (vt==VARTYPE_ID_BLOB) {
-      return "blob";
-    } else if (vt==VARTYPE_ID_VECTOR2D) {
-      return "vector2d";
-    } else if (vt==VARTYPE_ID_VECTOR3D) {
-      return "vector3d";
-    } else if (vt==VARTYPE_ID_TIMEVAR) {
-      return "timevar";
-    } else if (vt==VARTYPE_ID_TIMELINE) {
-      return "timeline";
-    } else if (vt==VARTYPE_ID_LIST) {
-      return "list";
-    } else if (vt==VARTYPE_ID_STRINGENUM) {
-      return "stringenum";
-    } else if (vt==VARTYPE_ID_SELECTION) {
-      return "selection";
-    } else if (vt==VARTYPE_ID_TRIGGER) {
-      return "trigger";
-    } else if (vt==VARTYPE_ID_QWIDGET) {
-      return "qwidget";
-    } else {
-      string s = userTypeToString(vt);
-      if (s=="" || s=="undefined") {
-        printf("warning: unknown vartype: %d\n",vt);
-        return "undefined";
-      }
-      return s;
-    }
+ //Syntax for auto-generated type names.
+  mRegisterVarType(VarString);
+  mRegisterVarType(VarBool);
+  mRegisterVarType(VarInt);
+  mRegisterVarType(VarDouble);
+  mRegisterVarType(VarBlob);
+  mRegisterVarType(VarList);
+  mRegisterVarType(VarExternal);
+  mRegisterVarType(VarStringEnum);
+  mRegisterVarType(VarSelection);
+  mRegisterVarType(VarQWidget);
+  mRegisterVarType(VarTrigger);
+  //legacy type names:
+//   registerVarType<VarString>("string"); 
+//   registerVarType<VarBool>("bool");
+//   registerVarType<VarInt>("int");
+//   registerVarType<VarDouble>("double");
+//   registerVarType<VarBlob>("blob");
+//   registerVarType<VarList>("list");
+//   registerVarType<VarExternal>("external");
+//   registerVarType<VarStringEnum>("stringenum");
+//   registerVarType<VarSelection>("selection");
+//   registerVarType<VarQWidget>("qwidget");
+//   registerVarType<VarTrigger>("trigger");
+}
+
+string VarTypesFactory::stringFromVarType(VarPtr ptr)
+{
+  std::string tname = (typeid(*(ptr.get())).name());  
+  std::map<std::string, std::string>::iterator iter = map_type_to_string.find(tname);
+  if (iter == map_type_to_string.end()) {
+    return "unknown";
+  } else {
+    return iter->second;
   }
+}
+
+
+
+
+  
 };

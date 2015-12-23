@@ -35,7 +35,7 @@ namespace VarTypes {
   */
 
   class VarBool;
-  typedef shared_ptr<VarBool> VarBoolPtr;
+  typedef std::tr1::shared_ptr<VarBool> VarBoolPtr;
   
   class VarBool : public VarTypeTemplate<VarBoolVal>
   {

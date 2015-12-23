@@ -34,7 +34,7 @@ namespace VarTypes {
   */
   
   class VarString;
-  typedef shared_ptr<VarString> VarStringPtr;
+  typedef std::tr1::shared_ptr<VarString> VarStringPtr;
   
   class VarString : public VarTypeTemplate<VarStringVal> 
   {

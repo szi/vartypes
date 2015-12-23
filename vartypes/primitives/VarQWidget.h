@@ -50,7 +50,7 @@ namespace VarTypes {
 
   
   class VarQWidget;
-  typedef shared_ptr<VarQWidget> VarQWidgetPtr;
+  typedef std::tr1::shared_ptr<VarQWidget> VarQWidgetPtr;
   
   class VarQWidget : public VarType
   {
@@ -78,8 +78,6 @@ namespace VarTypes {
     {
       printf("QWidget pointer: %p\n",_val);
     }
-  
-    virtual VarTypeId getType() const { return VARTYPE_ID_QWIDGET; };
   
     virtual QWidget * getQWidget() const  { 
       return _val;

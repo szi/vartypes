@@ -21,7 +21,8 @@
 #ifndef VDOUBLEVAL_H_
 #define VDOUBLEVAL_H_
 #include "VarVal.h"
-
+#include <sstream>
+#include <limits>
 namespace VarTypes {
   /*!
     \class  VarDouble
@@ -75,16 +76,14 @@ namespace VarTypes {
       unlock();
     }
   
-    virtual VarTypeId getType() const { return VARTYPE_ID_DOUBLE; };
-  
     /// get a maximum precision string representation of the current value
     /// Internally this uses sprintf with the %lf argument
     virtual string getString() const
     {
-      char result[255];
-      result[0]=0;
-      sprintf(result,"%lf",getDouble());
-      return result;
+      std::stringstream sts;
+      sts.precision(std::numeric_limits<double>::digits10 + 1);
+      sts << getDouble();
+      return sts.str();
     };
   
     /// get the value of this data-type

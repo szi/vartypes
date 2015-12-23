@@ -41,32 +41,28 @@ namespace VarTypes {
     If you don't know what VarTypes are, please see \c VarTypes.h 
   */
   
-  template <class CLASS_VARVAL_TYPE, VarTypeId TPL_vartype_id>   
+  template <class CLASS_VARVAL_TYPE>   
   class VarProtoBufferVal : virtual public VarVal
   {
   protected:
   
-    CLASS_VARVAL_TYPE * _val;
+    std::tr1::shared_ptr<CLASS_VARVAL_TYPE> _val;
   
   public:
 
-    VarProtoBufferVal(CLASS_VARVAL_TYPE * default_val=0) : VarVal()
+    VarProtoBufferVal(std::tr1::shared_ptr<CLASS_VARVAL_TYPE> default_val=std::tr1::shared_ptr<CLASS_VARVAL_TYPE>(new CLASS_VARVAL_TYPE())) : VarVal()
     {
-      if (default_val==0) {
-        default_val = new CLASS_VARVAL_TYPE();
-      }
       set(default_val);
       changed();
     }
   
     virtual ~VarProtoBufferVal() {
-      if (_val!=0) delete _val;
     }
   
     virtual void printdebug() const
     {
       lock();
-      printf("Pointer %p\n",_val);
+      printf("Pointer %p\n",_val.get());
       unlock();
     }
 
@@ -74,7 +70,7 @@ namespace VarTypes {
     virtual void getSerialString(string & val) const {
       lock();
       string temp;
-      if (_val!=0) {
+      if (_val.get()!=0) {
         _val->SerializeToString(&temp);
       }
       VarBase64::getTool()->encode(temp, val,1);
@@ -84,7 +80,7 @@ namespace VarTypes {
     virtual void setSerialString(const string & val) {
       lock();
       string temp;
-      if (_val!=0) {
+      if (_val.get()!=0) {
         VarBase64::getTool()->decode(val,temp);
         _val->ParseFromString(temp);
       }
@@ -94,44 +90,43 @@ namespace VarTypes {
 
     virtual void getBinarySerialString(string & val) const {
       lock();
-      if (_val!=0) _val->SerializeToString(&val);
+      if (_val.get()!=0) _val->SerializeToString(&val);
       unlock();
     }
   
     virtual void setBinarySerialString(const string & val) {
       lock();
-      if (_val!=0) _val->ParseFromString(val);
+      if (_val.get()!=0) _val->ParseFromString(val);
       unlock();
       changed();
     }
   
     virtual VarVal * clone() const {
-      VarProtoBufferVal<CLASS_VARVAL_TYPE, TPL_vartype_id> * tmp = new VarProtoBufferVal<CLASS_VARVAL_TYPE, TPL_vartype_id>();
+      VarProtoBufferVal<CLASS_VARVAL_TYPE> * tmp = new VarProtoBufferVal<CLASS_VARVAL_TYPE>();
       tmp->set(get());
       return tmp;
     }
 
-    virtual VarTypeId getType() const { return TPL_vartype_id; };
 
     virtual string getString() const
     {
-      CLASS_VARVAL_TYPE * tmp = get();
+      CLASS_VARVAL_TYPE * tmp = get().get();
       char blah[255];
       sprintf(blah,"Pointer: %p",tmp);
       return blah;
     };
 
-    virtual CLASS_VARVAL_TYPE * get() const {
-      CLASS_VARVAL_TYPE * res=0;
+    virtual std::tr1::shared_ptr<CLASS_VARVAL_TYPE> get() const {
+      std::tr1::shared_ptr<CLASS_VARVAL_TYPE> res;
       lock();
       res=_val;
       unlock();
       return res;
     };
 
-    virtual bool set(CLASS_VARVAL_TYPE * val) {
+    virtual bool set(std::tr1::shared_ptr<CLASS_VARVAL_TYPE> val) {
       lock();
-      if (_val!=val) {
+      if (_val.get()!=val.get()) {
         _val=val;
         unlock();
         changed();

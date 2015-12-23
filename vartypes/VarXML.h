@@ -41,12 +41,24 @@ namespace VarTypes {
     VarXML();
     virtual ~VarXML();
   
-    /// write a VarType node (and all of its children) to an xml file
-    static void write(VarPtr rootVar, string filename);
+    /// write a VarType node (and all of its children) to an xml file, using default options
+    static void write(VarPtr rootVar, string filename) {
+      VarTypeImportExportOptions options=VarTypeImportExportOptions();
+      write(rootVar,filename, options);
+    }
   
+    /// write a vector of VarType nodes (and all of their children) to an xml file, using default options
+    static void write(vector<VarPtr> rootVars, string filename) {
+      VarTypeImportExportOptions options=VarTypeImportExportOptions();
+      write(rootVars,filename, options);
+    }
+    
     /// write a vector of VarType nodes (and all of their children) to an xml file
-    static void write(vector<VarPtr> rootVars, string filename);
+    static void write(vector<VarPtr> rootVars, string filename, VarTypeImportExportOptions & options);
   
+    /// write a VarType node (and all of its children) to an xml file
+    static void write(VarPtr rootVar, string filename, VarTypeImportExportOptions & options);
+    
     /// read a VarType-tree from an xml file and return its root nodes as a vector.
     ///
     /// \param existing_nodes represents any pre-defined vartypes tree and should
@@ -55,7 +67,22 @@ namespace VarTypes {
     /// If a tree does pre-exist then the read function will update the data of
     /// any existing nodes, or create new nodes if they are missing in the existing
     /// tree.
-    static vector<VarPtr> read(vector<VarPtr> existing_nodes, string filename);
+
+    static vector<VarPtr> read(vector<VarPtr> existing_nodes, string filename, VarTypeImportExportOptions & options);
+    
+    static vector<VarPtr> read(vector<VarPtr> existing_nodes, string filename) {
+      VarTypeImportExportOptions options=VarTypeImportExportOptions();
+      return read(existing_nodes, filename, options);
+    }
+
+    static std::string getXML(vector<VarPtr> existing_nodes, VarTypeImportExportOptions & options);
+
+    static std::string getXML(vector<VarPtr> existing_nodes) {
+        VarTypeImportExportOptions options=VarTypeImportExportOptions();
+        return getXML(existing_nodes, options);
+    }
+
+
   };
 };
 #endif /*VARXML_H_*/

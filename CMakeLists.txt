@@ -28,7 +28,7 @@ set (SRCS
   ${src_dir}/vartypes/primitives/VarVal.cpp
   ${src_dir}/vartypes/primitives/VarIntVal.cpp
   ${src_dir}/vartypes/primitives/VarDoubleVal.cpp
-
+  
   ${src_dir}/vartypes/primitives/VarType.cpp
   ${src_dir}/vartypes/primitives/VarBlob.cpp
   ${src_dir}/vartypes/primitives/VarBool.cpp
@@ -51,6 +51,8 @@ set (SRCS
   ${src_dir}/vartypes/primitives/VarProtoBufferVal.cpp
   ${src_dir}/vartypes/primitives/VarProtoBuffer.cpp
 
+  ${src_dir}/vartypes/primitives/VarAnyVal.cpp
+  ${src_dir}/vartypes/primitives/VarAny.cpp
 )
 
 include_directories(${src_dir}/vartypes)
@@ -82,6 +84,7 @@ set (HEADERS
 
 set (INSTALLABLE_HEADERS
   ${HEADERS}
+  ${src_dir}/vartypes/VarTypesLoaderInterface.h
   ${src_dir}/vartypes/VarTypes.h
   ${src_dir}/vartypes/VarTypesFactory.h
   ${src_dir}/vartypes/gui/VarTreeViewOptions.h
@@ -96,6 +99,8 @@ set (INSTALLABLE_HEADERS
   ${src_dir}/vartypes/VarBase64.h
   ${src_dir}/vartypes/primitives/VarProtoBufferVal.h
   ${src_dir}/vartypes/primitives/VarProtoBuffer.h
+  ${src_dir}/vartypes/primitives/VarAnyVal.h
+  ${src_dir}/vartypes/primitives/VarAny.h
 )
 
 set (INSTALLABLE_DOCFILES
@@ -136,8 +141,19 @@ SET(CMAKE_INSTALL_DOCDIR share/doc CACHE PATH "Output directory for documentatio
 
 set (target vartypes)
 add_library(${target} SHARED ${MOC_SRCS} ${SRCS} ${RC_SRCS})
-set_target_properties(${target} PROPERTIES VERSION 0.7.0 SOVERSION 1)
+set_target_properties(${target} PROPERTIES VERSION 0.8.0 SOVERSION 1)
 target_link_libraries(${target} ${libs})
+
+set (example_target vartype_example)
+set (example_dir example)
+qt4_wrap_cpp (EXAMPLE_MOC_SRCS ${example_dir}/src/mainwindow.h)
+
+add_executable(${example_target}
+               ${EXAMPLE_MOC_SRCS}
+               ${example_dir}/src/mainwindow.cpp
+               ${example_dir}/src/example.cpp)
+               
+target_link_libraries(${example_target} ${libs} ${target})
 
 INSTALL(FILES ${INSTALLABLE_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/vartypes)
 

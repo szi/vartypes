@@ -29,7 +29,7 @@ namespace VarTypes {
   }
   
   void VarItemDelegate::editorChangeEvent() {
-    emit(commitData((QWidget *)sender()));
+    Q_EMIT(commitData((QWidget *)sender()));
   }
   
   void VarItemDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const {
@@ -62,7 +62,7 @@ namespace VarTypes {
     //  QItemDelegate::drawBackground(painter,option,index);
   
     if (dt!=0) {
-      if (dt->getType() != VARTYPE_ID_BOOL && dt->hasValue() && dt->hasMinValue() && dt->hasMaxValue()) {
+      if (std::tr1::dynamic_pointer_cast<VarBool>(dt).get() == 0 && dt->hasValue() && dt->hasMinValue() && dt->hasMaxValue()) {
         painter->save();  
     
         QRectF rect=option.rect;
@@ -137,7 +137,6 @@ namespace VarTypes {
       if (item!=0) {
         VarPtr dt=item->getVarType();
         if (dt!=0) {
-          //printf("Setting Editor for: %s\n",dt->getName().c_str());
           if (editor!=0 && ((dt->getFlags() & VARTYPE_FLAG_READONLY) != 0x00)) {
             editor->setEnabled(false);
           } else {
@@ -147,7 +146,7 @@ namespace VarTypes {
           //added on 3/27/09....return if we are done.
           return;
         }
-      } 
+      }
     }
     QItemDelegate::setEditorData(editor,index);
   }

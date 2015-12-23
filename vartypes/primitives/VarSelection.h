@@ -38,7 +38,7 @@ namespace VarTypes {
   */
   
   class VarSelection;
-  typedef shared_ptr<VarSelection> VarSelectionPtr;
+  typedef std::tr1::shared_ptr<VarSelection> VarSelectionPtr;
 
   class VarSelection : public VarType
   {
@@ -99,6 +99,17 @@ namespace VarTypes {
       return result;
     }
   
+    void getSelectedItems(vector<string> & items) {
+      items.clear();
+      lock();
+      for (int i = 0; i < list.size(); i++) {
+        if (((VarBool *)(list[i].get()))->getBool()==true) {
+          items.push_back(list[i]->getName());
+        }
+      }
+      unlock();
+    }
+
     /// get the string of item at a given index
     string getLabel(unsigned int index) const {
     string result="";
@@ -160,8 +171,6 @@ namespace VarTypes {
       return (list.size()-1);
     }
   
-    virtual VarTypeId getType() const { return VARTYPE_ID_SELECTION; } ;
-  
     virtual vector<VarPtr> getChildren() const
     {
       lock();
@@ -177,10 +186,10 @@ namespace VarTypes {
   
   #ifndef VDATA_NO_XML
   protected:
-    virtual void readChildren(XMLNode & us)
+    virtual void readChildren(XMLNode & us, VarTypeImportExportOptions & options)
     {
       if (areFlagsSet(VARTYPE_FLAG_NOLOAD_ENUM_CHILDREN)==false) {
-        list=readChildrenHelper(us, list, false, false);
+        list=readChildrenHelper(us, list, false, false, options);
         for (unsigned int i = 0; i < list.size();i++) {
           list[i]->addFlags(VARTYPE_FLAG_HIDDEN);
         }

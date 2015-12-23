@@ -37,7 +37,7 @@ namespace VarTypes {
   */
   
   class VarList;
-  typedef shared_ptr<VarList> VarListPtr;
+  typedef std::tr1::shared_ptr<VarList> VarListPtr;
   
   class VarList : public VarType
   {
@@ -61,13 +61,68 @@ namespace VarTypes {
     virtual string getString() const { return ""; }
   
     /// this will clear the list
-    virtual void resetToDefault() {lock(); for (unsigned int i=0;i<list.size();i++) { emit(childRemoved(list[i])); } list.clear();  unlock(); };
+    virtual void resetToDefault() {lock(); for (unsigned int i=0;i<list.size();i++) { Q_EMIT(childRemoved(list[i])); } list.clear();  unlock(); changed(); };
   
     /// prints the label and number of elements
     virtual void printdebug() const { printf("VarList named %s containing %zu element(s)\n",getName().c_str(), list.size()); }
   
     /// adds a VarType item to the end of the list.
-    int addChild(VarPtr child) { lock(); list.push_back(child); emit(childAdded(child)); unlock(); changed(); return (list.size()-1);}
+    int addChild(VarPtr child) { lock(); list.push_back(child); Q_EMIT(childAdded(child)); unlock(); changed(); return (list.size()-1);}
+    
+    void copyChildrenFromVarList(VarListPtr other) {
+      lock();
+        list.clear();
+        if (other.get()!=0) {
+          list = other->getChildren();
+        }
+      unlock();
+      changed();
+    }
+    
+    void popLastChild() {
+      lock();
+      if (list.empty()==false) {
+        VarPtr child = list.back();
+        Q_EMIT(childRemoved(child));
+        list.pop_back();
+      }
+      unlock();
+      changed();
+    }
+    
+    bool hasChildren() {
+      bool result;
+      lock();
+      result = !(list.empty());
+      unlock();
+      return result;
+    }
+    
+    VarPtr getLastChild() {
+      VarPtr result;
+      lock();
+      if (list.empty()==false) {
+        result = list.back();
+      }
+      unlock();
+      return result;
+    }
+    
+    VarPtr getChild(int idx) {
+      VarPtr result;
+      lock();
+      if (idx >= 0 && idx < list.size() && list.empty()==false) {
+        result = list[idx];
+      }
+      unlock();
+      return result;
+    }
+    
+    template <class t>
+    std::tr1::shared_ptr<t> getCastableChild(int idx) {
+      return std::tr1::dynamic_pointer_cast<t>(getChild(idx)); 
+    }
+    
     bool removeChild(VarPtr child) {
       lock();
       vector<VarPtr> newlist;
@@ -81,15 +136,15 @@ namespace VarTypes {
         }
       }
       if (found) {
-        emit(childRemoved(child));
         list=newlist;
-        changed();
       }
       unlock();
+      if (found) {
+        Q_EMIT(childRemoved(child));
+        changed();
+      }
       return found;
     };
-  
-    virtual VarTypeId getType() const { return VARTYPE_ID_LIST; } ;
   
     /// returns the number of children of this list
     virtual int getChildrenCount() const
@@ -106,14 +161,15 @@ namespace VarTypes {
     /// use it to un-allocate entire hierarchies from memory
     virtual void deleteAllChildren() {
       lock();
-      int n = list.size();
-      for (int i = 0; i < n ; i++) {
-        if (list[i]!=0) {
-          list[i]->deleteAllChildren();
-        }
-      }
+//       int n = list.size();
+//       for (int i = 0; i < n ; i++) {
+//         if (list[i]!=0) {
+//           list[i]->deleteAllChildren();
+//         }
+//       }
       list.clear();
       unlock();
+      changed();
     }
 
     /// returns a vector of all children in the order that they occur in internally
@@ -142,8 +198,8 @@ namespace VarTypes {
     /// If the child is not found then other is returned
     /// However, if the child *is* found then other will be *deleted* and the child will be returned!
     template <class VCLASSPTR> 
-    VCLASSPTR findChildOrReplace(VCLASSPTR other) {
-      VCLASSPTR data = (VCLASSPTR)findChild(other->getName());
+    std::tr1::shared_ptr<VCLASSPTR> findChildOrReplace(std::tr1::shared_ptr<VCLASSPTR> other) {
+      std::tr1::shared_ptr<VCLASSPTR> data = std::tr1::dynamic_pointer_cast<VCLASSPTR>(findChild(other->getName()));
       if (data.get()!=0) {
         return data;
       } else {
@@ -155,15 +211,15 @@ namespace VarTypes {
   
   #ifndef VDATA_NO_XML
   protected:
-    virtual void readChildren(XMLNode & us)
+    virtual void readChildren(XMLNode & us, VarTypeImportExportOptions & options)
     {
       lock();
       int before=list.size();
-      list=readChildrenHelper(us, list, false, false);
+      list=readChildrenHelper(us, list, false, false, options);
       int after=list.size();
       if (after > before) {
         for (int i=before; i < after; i++) {
-          emit(childAdded(list[i]));
+          Q_EMIT(childAdded(list[i]));
         }
       }
       unlock();

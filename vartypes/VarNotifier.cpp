@@ -65,14 +65,14 @@ namespace VarTypes {
     mutex.lock();
     changed=true;
     mutex.unlock();
-    emit changeOccurred(VarPtr());
+    Q_EMIT changeOccurred(VarPtr());
   }
   
   void VarNotifier::changeSlot(VarPtr item) {
     mutex.lock();
     changed=true;
     mutex.unlock();
-    emit changeOccurred(item);
+    Q_EMIT changeOccurred(item);
   }
   
   void VarNotifier::setChanged(bool value) {
@@ -113,7 +113,7 @@ namespace VarTypes {
     if (notification_type==VarNotificationChanged) {
       connect(item, SIGNAL(hasChanged(VarPtr)), this, SLOT(changeSlot(VarPtr)));
     } else {
-      connect(item, SIGNAL(wasEdited(VarType*)), this, SLOT(changeSlot(VarPtr)));
+      connect(item, SIGNAL(wasEdited(VarPtr)), this, SLOT(changeSlot(VarPtr)));
     }
   }
   

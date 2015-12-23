@@ -18,10 +18,12 @@
   \author  Stefan Zickler, (C) 2008
 */
 #include "VarItem.h"
-
+#include <QApplication>
 namespace VarTypes {
   
   VarItem::VarItem(VarPtr _dt, const VarTreeViewOptions * opts, GuiColumnFlag myflags) {
+    moveToThread(QApplication::instance()->thread());
+    //fprintf(stderr, "VARITEM: %s lives in thread: %p\n", _dt->getName().c_str(), thread());
     update(_dt, opts, myflags);
   }
   
@@ -35,7 +37,7 @@ namespace VarTypes {
     if (dt!=0) {
       //update tree structure if it's a list item.
       if (areColFlagsSet(colflags,GUI_COLUMN_FLAG_TREE_NODE)) {
-        if (dt->getType()==VARTYPE_ID_LIST || dt->getType()==VARTYPE_ID_EXTERNAL) {
+        if (  std::tr1::dynamic_pointer_cast<VarList>(dt).get() != 0 ) {
           if (dt->areFlagsSet(VARTYPE_FLAG_HIDE_CHILDREN)==false) {
             vd=((VarList*)(dt.get()))->getChildren();
           }
@@ -51,28 +53,42 @@ namespace VarTypes {
   void VarItem::update(VarPtr _dt, const VarTreeViewOptions * _opts, GuiColumnFlag myflags) {
     opts=_opts;
     colflags=myflags;
-    setEditable(areColFlagsSet( colflags,GUI_COLUMN_FLAG_EDITABLE) && (_dt->getType() != VARTYPE_ID_LIST && _dt->getType() != VARTYPE_ID_EXTERNAL ));
-    if (_dt!=dt && _dt!=0) {
-      if (dt != 0) {
+    bool type_change=false;
+    if (_dt!=dt) type_change=true;
+    setEditable(areColFlagsSet( colflags,GUI_COLUMN_FLAG_EDITABLE) && (std::tr1::dynamic_pointer_cast<VarList>(dt).get() == 0 ));
+    if (_dt!=dt && _dt.get()!=0) {
+      if (dt.get() != 0) {
         disconnect(dt.get(),SIGNAL(hasChanged(VarPtr)),this,SLOT(changeUpdate()));
       }
-      connect(_dt.get(),SIGNAL(hasChanged(VarPtr)),this,SLOT(changeUpdate()));
+      //if (_dt->thread()!=thread()) {
+      connect(_dt.get(),SIGNAL(hasChanged(VarPtr)),this,SLOT(changeUpdate()));//, Qt::UniqueConnection); //original
+//       } else {
+//          connect(_dt.get(),SIGNAL(hasChanged(VarPtr)),this,SLOT(changeUpdate()), Qt::DirectConnection);
+//       }
+      //connect(_dt.get(),SIGNAL(hasChanged(VarPtr)),this,SLOT(changeUpdate()),Qt::DirectConnection); //BUGFIX?!
       dt=_dt;
     }
-    if (dt!=0) {
+    
+    if (dt.get()!=0) {
     setEnabled(! dt->areFlagsSet(VARTYPE_FLAG_READONLY));
       if (areColFlagsSet(colflags,GUI_COLUMN_FLAG_TREE_NODE)) {
         setText(QString::fromStdString(dt->getName()));
-        setToolTip(QString::fromStdString(dt->getName()) + " (" + QString::fromStdString(dt->getTypeName()) + ")");
-        if (dt->getType() == VARTYPE_ID_LIST) {
-          setIcon(QIcon(":/icons/vartypes/list.png"));
-        } else if (dt->getType() == VARTYPE_ID_EXTERNAL) {
-          setIcon(QIcon(":/icons/vartypes/external.png"));
-        } else if (dt->getType() == VARTYPE_ID_TIMELINE) {
-          setIcon(QIcon(":/icons/vartypes/time.png"));
+        
+        
+        QString type_description = QString::fromStdString(dt->getTypeDescription());
+        QString instance_description = QString::fromStdString(dt->getInstanceDescription());
+        setToolTip(QString("<b>") + QString::fromStdString(dt->getName()) + QString("</b> (") + QString::fromStdString(dt->getTypeName()) + ")" + (type_description.isEmpty() ? QString("") : (QString("<br /><i>") + type_description + QString("</i>"))) + (instance_description.isEmpty() ? QString("") : (QString("<br />") + instance_description + QString(""))));
+
+        
+        if (std::tr1::dynamic_pointer_cast<VarExternal>(dt).get() != 0) {
+          if (type_change) setIcon(QIcon(":/icons/vartypes/external.png"));
+//         } else if (dt->getType() == VARTYPE_ID_TIMELINE) {
+//           setIcon(QIcon(":/icons/vartypes/time.png"));
+        } else if (std::tr1::dynamic_pointer_cast<VarList>(dt).get() != 0 ) {
+          if (type_change) setIcon(QIcon(":/icons/vartypes/list.png"));
           //setCheckState(1,Qt::Unchecked);
         } else {
-          setIcon(QIcon(":/icons/vartypes/node.png"));
+          if (type_change) setIcon(QIcon(":/icons/vartypes/node.png"));
         }
       } else if (areColFlagsSet(colflags,GUI_COLUMN_FLAG_TEXT_VALUE)) {
         if ((dt->getFlags() & VARTYPE_FLAG_PERSISTENT) != 0x00) {
@@ -82,6 +98,7 @@ namespace VarTypes {
         }
       }
     }
+    emitDataChanged();
   }
   
   void VarItem::searchTree(QStandardItem * node, const VarPtr search, QList<VarItem *> & result) {

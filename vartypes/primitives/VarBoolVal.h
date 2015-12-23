@@ -63,8 +63,6 @@ namespace VarTypes {
       return tmp;
     }
   
-    virtual VarTypeId getType() const { return VARTYPE_ID_BOOL; };
-  
     /// will return the string "true" if true, or "false" if false.
     virtual string getString() const { return (getBool() ? "true" : "false"); };
     /// will return 1.0 if true, 0.0 if false.

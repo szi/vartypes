@@ -76,8 +76,6 @@ namespace VarTypes {
     }
 
   
-    virtual VarTypeId getType() const { return VARTYPE_ID_INT; };
-  
     virtual string getString() const
     {
       char result[255];
