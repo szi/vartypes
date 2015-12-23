@@ -44,6 +44,7 @@ namespace VarTypes {
       lock();
       _val=default_val;
       unlock();
+      changed();
     }
 
     virtual ~VarStringVal() {}
