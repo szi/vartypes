@@ -20,7 +20,9 @@
 
 =======================================================================
  Changelog:
- 12/15/15 - v0.8 - Made shared_ptr explicitly use std::tr1 namespace
+ 12/15/15 - v0.8 - Fixed Issue #2 (VarIntVal constructor was checking
+                   _val before it was set)
+                 - Made shared_ptr explicitly use std::tr1 namespace
                  - Cleanup in VarTypesFactory
                  - Added import/export options
                  - More coherent use of shared_ptr

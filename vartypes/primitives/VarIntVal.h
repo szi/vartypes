@@ -56,7 +56,9 @@ namespace VarTypes {
   
     VarIntVal(int default_val=0) : VarVal()
     {
-      setInt(default_val);
+      lock();
+      _val=default_val;
+      unlock();
       changed();
     }
   
