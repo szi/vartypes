@@ -126,6 +126,9 @@ qt4_add_resources(RC_SRCS
   ${RC}
 )
 
+#explicitly set c++ standard to use
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++98")
+
 #flags to set in debug mode
 set (CMAKE_CXX_FLAGS_DEBUG "-g")
 
