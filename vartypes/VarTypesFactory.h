@@ -93,6 +93,6 @@ namespace VarTypes {
   
   };
   
-  typedef std::tr1::shared_ptr<VarTypesFactory> VarTypesFactoryPtr;
+  typedef std::shared_ptr<VarTypesFactory> VarTypesFactoryPtr;
 };
 #endif

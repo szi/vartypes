@@ -50,7 +50,7 @@ namespace VarTypes {
 
   
   class VarQWidget;
-  typedef std::tr1::shared_ptr<VarQWidget> VarQWidgetPtr;
+  typedef std::shared_ptr<VarQWidget> VarQWidgetPtr;
   
   class VarQWidget : public VarType
   {

@@ -62,7 +62,7 @@ namespace VarTypes {
     //  QItemDelegate::drawBackground(painter,option,index);
   
     if (dt!=0) {
-      if (std::tr1::dynamic_pointer_cast<VarBool>(dt).get() == 0 && dt->hasValue() && dt->hasMinValue() && dt->hasMaxValue()) {
+      if (std::dynamic_pointer_cast<VarBool>(dt).get() == 0 && dt->hasValue() && dt->hasMinValue() && dt->hasMaxValue()) {
         painter->save();  
     
         QRectF rect=option.rect;

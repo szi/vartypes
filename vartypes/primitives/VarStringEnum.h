@@ -40,7 +40,7 @@ namespace VarTypes {
   */
   
   class VarStringEnum;
-  typedef std::tr1::shared_ptr<VarStringEnum> VarStringEnumPtr;
+  typedef std::shared_ptr<VarStringEnum> VarStringEnumPtr;
   
   class VarStringEnum : public VarType
   {

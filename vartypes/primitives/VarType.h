@@ -45,7 +45,7 @@
 #include <QDir>
 
 //Would use QSharedPointer instead of the tr1/boost versions, but enable_shared_from_this is not yet implemented in Qt which is a functionality that we need as we have vartypes generating events with pointers to themselves.
-#include <tr1/memory>
+#include <memory>
 //#include <bits/algorithmfwd.h>
 #include <QApplication>
 
@@ -224,10 +224,10 @@ namespace VarTypes {
   //if using QT, trigger the hasChanged() signal
   //Note: The reason why we need a try/catch is that if shared_from_this is called when the vartype has not yet been wrapped in a shared_ptr, then a bad weak_ptr exception is thrown.
   //      This happens, for example when changed() is called from within a constructor, before the vartype was wrapped by a shared_ptr.
-  //#define VARTYPE_MACRO_CHANGED try{ printf("emit: %s\n", getName().c_str()); Q_EMIT(hasChanged( //std::tr1::dynamic_pointer_cast<VarType>(((VarType*)this)->shared_from_this()))); } catch(...) { printf("FAIL\n"); } ;
+  //#define VARTYPE_MACRO_CHANGED try{ printf("emit: %s\n", getName().c_str()); Q_EMIT(hasChanged( //std::dynamic_pointer_cast<VarType>(((VarType*)this)->shared_from_this()))); } catch(...) { printf("FAIL\n"); } ;
   
   
-  #define VARTYPE_MACRO_CHANGED try{ Q_EMIT(hasChanged( std::tr1::dynamic_pointer_cast<VarType>(((VarType*)this)->shared_from_this()))); } catch (...) { } ;
+  #define VARTYPE_MACRO_CHANGED try{ Q_EMIT(hasChanged( std::dynamic_pointer_cast<VarType>(((VarType*)this)->shared_from_this()))); } catch (...) { } ;
 
   
   #ifndef VDATA_NO_THREAD_SAFETY
@@ -239,13 +239,13 @@ namespace VarTypes {
   #endif
   
   class VarType;
-  typedef std::tr1::shared_ptr<VarType> VarPtr;
+  typedef std::shared_ptr<VarType> VarPtr;
   
 //   class QEnableSharedFromThis : public enable_shared_from_this<VarType> {
 //   };
   
   //if using QT, inherit QObject as a base
-  class VarType : public QObject, public virtual VarVal, public std::tr1::enable_shared_from_this<VarType>
+  class VarType : public QObject, public virtual VarVal, public std::enable_shared_from_this<VarType>
   {
   public:
 
@@ -336,12 +336,12 @@ namespace VarTypes {
     /// Returns all children nodes that are castable to the selected type.
     /// This can be an empty vector if the node does not have any children of that type.
     template <class t>
-    vector<std::tr1::shared_ptr<t> > getCastableChildren() const {
-      vector<std::tr1::shared_ptr<t> > result;
+    vector<std::shared_ptr<t> > getCastableChildren() const {
+      vector<std::shared_ptr<t> > result;
       vector<VarPtr> list = getChildren();
       ////fprintf(stderr, "NODE: %s claims to have %d children\n", getName().c_str(), list.size());
       for (int i = 0; i < list.size(); i++) {
-        std::tr1::shared_ptr<t> ptr = std::tr1::dynamic_pointer_cast<t>(list[i]); 
+        std::shared_ptr<t> ptr = std::dynamic_pointer_cast<t>(list[i]); 
         if (ptr.get()!=0) {
           result.push_back(ptr);
         }
@@ -352,11 +352,11 @@ namespace VarTypes {
 //     /// Returns all children nodes that are castable to the selected type.
 //     /// This can be an empty vector if the node does not have any children of that type.
 //     template <class t>
-//     vector<std::tr1::shared_ptr<t> > getChildren(string blah="") const {
-//       vector<std::tr1::shared_ptr<t> > result;
+//     vector<std::shared_ptr<t> > getChildren(string blah="") const {
+//       vector<std::shared_ptr<t> > result;
 // //       vector<VarPtr> list = getChildren();
 // //       for (int i = 0; i < list.size(); i++) {
-// //         std::tr1::shared_ptr<t> ptr = std::tr1::dynamic_pointer_cast<t>(list[i]); 
+// //         std::shared_ptr<t> ptr = std::dynamic_pointer_cast<t>(list[i]); 
 // //         if (ptr.get()!=0) {
 // //           result.push_back(ptr);
 // //         }
@@ -368,13 +368,13 @@ namespace VarTypes {
     /// Checks whether this VarType can be dynamically casted to this particular type.
     template <class t>
     bool is_castable() {
-      return ((std::tr1::dynamic_pointer_cast<t>(this->shared_from_this()).get())!=0);
+      return ((std::dynamic_pointer_cast<t>(this->shared_from_this()).get())!=0);
     }
     
     /// Dynamically casts to a particular type.
     template <class t>
-    std::tr1::shared_ptr<t> cast() {
-      return std::tr1::dynamic_pointer_cast<t>(this->shared_from_this());
+    std::shared_ptr<t> cast() {
+      return std::dynamic_pointer_cast<t>(this->shared_from_this());
     }
     /// removes all children, by actually deleting them in memory
     /// note that this is recursive.
@@ -434,13 +434,13 @@ namespace VarTypes {
     /// Finds a child based on its label and limiting search only to types that are castable to t
     /// Returns 0 if not found
     template <class t>
-    std::tr1::shared_ptr<t> findCastableChild(string label, const VarTypeSearchOptions & options = VarTypeSearchOptions() ) const {
-      vector<std::tr1::shared_ptr<t> > children = getCastableChildren<t>();
+    std::shared_ptr<t> findCastableChild(string label, const VarTypeSearchOptions & options = VarTypeSearchOptions() ) const {
+      vector<std::shared_ptr<t> > children = getCastableChildren<t>();
       unsigned int s = children.size();
       for (unsigned int i=0;i<s;i++) {
         if (checkSearchMatch(children[i]->getName(), label)) return (children[i]);
       }
-      return std::tr1::shared_ptr<t>();
+      return std::shared_ptr<t>();
     }
     
     /// Finds a child based on its label. Only the first match is returned.
@@ -452,10 +452,10 @@ namespace VarTypes {
     /// Finds all children based on its label and limiting search only to types that are castable to t
     /// Returns 0 if not found
     template <class t>
-    vector<std::tr1::shared_ptr<t> > findCastableChildren(string label, const VarTypeSearchOptions & options = VarTypeSearchOptions()) const {
-      vector<std::tr1::shared_ptr<t> > children = getCastableChildren<t>();
+    vector<std::shared_ptr<t> > findCastableChildren(string label, const VarTypeSearchOptions & options = VarTypeSearchOptions()) const {
+      vector<std::shared_ptr<t> > children = getCastableChildren<t>();
       ////fprintf(stderr, "Found %d children of the correct type.\n", children.size());
-      vector<std::tr1::shared_ptr<t> > result;
+      vector<std::shared_ptr<t> > result;
       unsigned int s = children.size();
       for (unsigned int i=0;i<s;i++) {
         ////fprintf(stderr, "Comparing (%s) to (%s)...\n", children[i]->getName().c_str(), label.c_str());
@@ -478,9 +478,9 @@ namespace VarTypes {
     //     /// Recursively finds a child based on its label and limiting search only to types that are castable to t
     //     /// Returns 0 if not found
     //     template <class t>
-    //     std::tr1::shared_ptr<t> findCastableChildRecursive(std::deque< string > path, const VarTypeSearchOptions & options = VarTypeSearchOptions()) const {
+    //     std::shared_ptr<t> findCastableChildRecursive(std::deque< string > path, const VarTypeSearchOptions & options = VarTypeSearchOptions()) const {
     //       if (path.empty()) {
-    //         return  std::tr1::shared_ptr<t>();
+    //         return  std::shared_ptr<t>();
     //       } else {
     //         std::string root = path.front();
     //         path.pop_front();
@@ -489,7 +489,7 @@ namespace VarTypes {
     //         } else {
     //           VarPtr child = findChild(root, options);
     //           if (child.get()==0) {
-    //             return std::tr1::shared_ptr<t>();
+    //             return std::shared_ptr<t>();
     //           } else {
     //             return child->findCastableChildRecursive<t>(path, options);
     //           }
@@ -506,7 +506,7 @@ namespace VarTypes {
     /// Recursively finds all children based on its label and limiting search only to types that are castable to t
     /// Returns number of matches and adds results into the vector v, with matching relative paths in vector p.
     template <class t>
-    int findCastableChildrenRecursive(std::deque< string > orig_path, vector<std::tr1::shared_ptr<t> > & result_children, vector<std::deque< VarPtr > > & result_paths, const VarTypeSearchOptions & options = VarTypeSearchOptions()) const {
+    int findCastableChildrenRecursive(std::deque< string > orig_path, vector<std::shared_ptr<t> > & result_children, vector<std::deque< VarPtr > > & result_paths, const VarTypeSearchOptions & options = VarTypeSearchOptions()) const {
       
       std::deque< string > path=orig_path;
       if (path.empty()) {
@@ -516,7 +516,7 @@ namespace VarTypes {
         path.pop_front();
         
         if (path.empty()) {
-          vector<std::tr1::shared_ptr<t> > tchildren = findCastableChildren<t>(root, options);
+          vector<std::shared_ptr<t> > tchildren = findCastableChildren<t>(root, options);
           ////fprintf(stderr, "Search for castable children (%s) returned %d\n", root.c_str(), tchildren.size());
           for (int i = 0; i < tchildren.size(); i++) {
             result_children.push_back(tchildren[i]);
@@ -556,8 +556,8 @@ namespace VarTypes {
     
     ///shortcut overloaded version of findCastableChildrenRecursive
     template <class t>
-    vector<std::tr1::shared_ptr<t> > findCastableChildrenRecursive(std::deque< string > path, const VarTypeSearchOptions & options = VarTypeSearchOptions()) const {
-      vector<std::tr1::shared_ptr<t> > result;
+    vector<std::shared_ptr<t> > findCastableChildrenRecursive(std::deque< string > path, const VarTypeSearchOptions & options = VarTypeSearchOptions()) const {
+      vector<std::shared_ptr<t> > result;
       vector<std::deque<VarPtr> > paths;
       
       findCastableChildrenRecursive<t>(path, result, paths, options);
@@ -572,14 +572,14 @@ namespace VarTypes {
     }
     
     template <class t>
-    std::tr1::shared_ptr<t> findCastableChildRecursive(std::deque< string > path, const VarTypeSearchOptions & options = VarTypeSearchOptions()) const {
-      vector<std::tr1::shared_ptr<t> > result;
+    std::shared_ptr<t> findCastableChildRecursive(std::deque< string > path, const VarTypeSearchOptions & options = VarTypeSearchOptions()) const {
+      vector<std::shared_ptr<t> > result;
       vector<std::deque<VarPtr> > paths;
       VarTypeSearchOptions local_options = options;
       local_options.setMaximumNumberOfResults(1);
       findCastableChildrenRecursive<t>(path, result, paths, local_options);
       if (result.empty()) {
-        return std::tr1::shared_ptr<t>();
+        return std::shared_ptr<t>();
       } else {
         return result[0];
       }
@@ -623,7 +623,7 @@ namespace VarTypes {
     /// E.g. "Globals/Child/Yes\/No" will parse to -> "Globals"->"Child"->"Yes/No"
     /// Returns 0 if not found
     template <class t>
-    std::tr1::shared_ptr<t> findCastableChildRecursive(string label, const VarTypeSearchOptions & options = VarTypeSearchOptions(), char separator = '/', char escape_character = '\\') const {
+    std::shared_ptr<t> findCastableChildRecursive(string label, const VarTypeSearchOptions & options = VarTypeSearchOptions(), char separator = '/', char escape_character = '\\') const {
       return findCastableChildRecursive<t>(stringToChain(label, separator, escape_character), options);
     }
 
@@ -642,7 +642,7 @@ namespace VarTypes {
     /// E.g. "Globals/Child/Yes\/No" will parse to -> "Globals"->"Child"->"Yes/No"
     /// Returns 0 if not found
     template <class t>
-    int findCastableChildrenRecursive(string label, vector<std::tr1::shared_ptr<t> > & result_children, vector<std::deque< VarPtr > > & result_paths, const VarTypeSearchOptions & options = VarTypeSearchOptions(), char separator = '/', char escape_character = '\\') const {
+    int findCastableChildrenRecursive(string label, vector<std::shared_ptr<t> > & result_children, vector<std::deque< VarPtr > > & result_paths, const VarTypeSearchOptions & options = VarTypeSearchOptions(), char separator = '/', char escape_character = '\\') const {
       return findCastableChildrenRecursive<t>(stringToChain(label, separator, escape_character), result_children, result_paths, options);
     }
 
@@ -652,7 +652,7 @@ namespace VarTypes {
     /// E.g. "Globals/Child/Yes\/No" will parse to -> "Globals"->"Child"->"Yes/No"
     /// Returns 0 if not found
     template <class t>
-    vector<std::tr1::shared_ptr<t> > findCastableChildrenRecursive(string label, const VarTypeSearchOptions & options = VarTypeSearchOptions(), char separator = '/', char escape_character = '\\') const {
+    vector<std::shared_ptr<t> > findCastableChildrenRecursive(string label, const VarTypeSearchOptions & options = VarTypeSearchOptions(), char separator = '/', char escape_character = '\\') const {
       return findCastableChildrenRecursive<t>(stringToChain(label, separator, escape_character), options);
     }
     
@@ -661,7 +661,7 @@ namespace VarTypes {
     /// Path separator can be escaped via escape character. Escape character is printed via double escape.
     /// E.g. "Globals/Child/Yes\/No" will parse to -> "Globals"->"Child"->"Yes/No"
     /// Returns 0 if not found
-    int findChildrenRecursive(string label, vector<std::tr1::shared_ptr<VarType> > & result_children, vector<std::deque< VarPtr > > & result_paths, const VarTypeSearchOptions & options = VarTypeSearchOptions(), char separator = '/', char escape_character = '\\') const {
+    int findChildrenRecursive(string label, vector<std::shared_ptr<VarType> > & result_children, vector<std::deque< VarPtr > > & result_paths, const VarTypeSearchOptions & options = VarTypeSearchOptions(), char separator = '/', char escape_character = '\\') const {
       return findCastableChildrenRecursive<VarType>(label, result_children, result_paths, options, separator, escape_character);
     }
     
@@ -670,7 +670,7 @@ namespace VarTypes {
     /// Path separator can be escaped via escape character. Escape character is printed via double escape.
     /// E.g. "Globals/Child/Yes\/No" will parse to -> "Globals"->"Child"->"Yes/No"
     /// Returns 0 if not found
-    vector<std::tr1::shared_ptr<VarType> > findChildrenRecursive(string label, const VarTypeSearchOptions & options = VarTypeSearchOptions(), char separator = '/', char escape_character = '\\') const {
+    vector<std::shared_ptr<VarType> > findChildrenRecursive(string label, const VarTypeSearchOptions & options = VarTypeSearchOptions(), char separator = '/', char escape_character = '\\') const {
       return findCastableChildrenRecursive<VarType>(label, options, separator, escape_character);
     }
     

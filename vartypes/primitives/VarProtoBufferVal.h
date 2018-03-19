@@ -46,11 +46,11 @@ namespace VarTypes {
   {
   protected:
   
-    std::tr1::shared_ptr<CLASS_VARVAL_TYPE> _val;
+    std::shared_ptr<CLASS_VARVAL_TYPE> _val;
   
   public:
 
-    VarProtoBufferVal(std::tr1::shared_ptr<CLASS_VARVAL_TYPE> default_val=std::tr1::shared_ptr<CLASS_VARVAL_TYPE>(new CLASS_VARVAL_TYPE())) : VarVal()
+    VarProtoBufferVal(std::shared_ptr<CLASS_VARVAL_TYPE> default_val=std::shared_ptr<CLASS_VARVAL_TYPE>(new CLASS_VARVAL_TYPE())) : VarVal()
     {
       set(default_val);
       changed();
@@ -116,15 +116,15 @@ namespace VarTypes {
       return blah;
     };
 
-    virtual std::tr1::shared_ptr<CLASS_VARVAL_TYPE> get() const {
-      std::tr1::shared_ptr<CLASS_VARVAL_TYPE> res;
+    virtual std::shared_ptr<CLASS_VARVAL_TYPE> get() const {
+      std::shared_ptr<CLASS_VARVAL_TYPE> res;
       lock();
       res=_val;
       unlock();
       return res;
     };
 
-    virtual bool set(std::tr1::shared_ptr<CLASS_VARVAL_TYPE> val) {
+    virtual bool set(std::shared_ptr<CLASS_VARVAL_TYPE> val) {
       lock();
       if (_val.get()!=val.get()) {
         _val=val;
