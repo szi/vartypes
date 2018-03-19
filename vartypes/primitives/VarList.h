@@ -37,7 +37,7 @@ namespace VarTypes {
   */
   
   class VarList;
-  typedef std::tr1::shared_ptr<VarList> VarListPtr;
+  typedef std::shared_ptr<VarList> VarListPtr;
   
   class VarList : public VarType
   {
@@ -119,8 +119,8 @@ namespace VarTypes {
     }
     
     template <class t>
-    std::tr1::shared_ptr<t> getCastableChild(int idx) {
-      return std::tr1::dynamic_pointer_cast<t>(getChild(idx)); 
+    std::shared_ptr<t> getCastableChild(int idx) {
+      return std::dynamic_pointer_cast<t>(getChild(idx)); 
     }
     
     bool removeChild(VarPtr child) {
@@ -198,8 +198,8 @@ namespace VarTypes {
     /// If the child is not found then other is returned
     /// However, if the child *is* found then other will be *deleted* and the child will be returned!
     template <class VCLASSPTR> 
-    std::tr1::shared_ptr<VCLASSPTR> findChildOrReplace(std::tr1::shared_ptr<VCLASSPTR> other) {
-      std::tr1::shared_ptr<VCLASSPTR> data = std::tr1::dynamic_pointer_cast<VCLASSPTR>(findChild(other->getName()));
+    std::shared_ptr<VCLASSPTR> findChildOrReplace(std::shared_ptr<VCLASSPTR> other) {
+      std::shared_ptr<VCLASSPTR> data = std::dynamic_pointer_cast<VCLASSPTR>(findChild(other->getName()));
       if (data.get()!=0) {
         return data;
       } else {

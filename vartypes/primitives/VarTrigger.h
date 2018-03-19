@@ -39,7 +39,7 @@ namespace VarTypes {
   */
   
   class VarTrigger;
-  typedef std::tr1::shared_ptr<VarTrigger> VarTriggerPtr;
+  typedef std::shared_ptr<VarTrigger> VarTriggerPtr;
   
   class VarTrigger : public VarType
   {

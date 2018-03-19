@@ -35,7 +35,7 @@ namespace VarTypes {
   */
 
   class VarDouble;
-  typedef std::tr1::shared_ptr<VarDouble> VarDoublePtr;
+  typedef std::shared_ptr<VarDouble> VarDoublePtr;
   
   class VarDouble : public VarTypeTemplate<VarDoubleVal>
   {

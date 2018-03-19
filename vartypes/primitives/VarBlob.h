@@ -45,7 +45,7 @@ namespace VarTypes {
   */
 
   class VarBlob;
-  typedef std::tr1::shared_ptr<VarBlob> VarBlobPtr;
+  typedef std::shared_ptr<VarBlob> VarBlobPtr;
   
   class VarBlob : public VarType
   {

@@ -14,7 +14,7 @@ cmake: mkbuilddir CMakeLists.txt
 	cd $(buildDir) && cmake -DCMAKE_BUILD_TYPE=$(buildType) ..
 
 build: cmake
-	$(MAKE) -C $(buildDir)
+	$(MAKE) -C $(buildDir) -std=c++11
 
 clean: mkbuilddir
 	$(MAKE) -C $(buildDir) clean

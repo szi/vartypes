@@ -34,7 +34,7 @@ namespace VarTypes {
   */
   
   class VarInt;
-  typedef std::tr1::shared_ptr<VarInt> VarIntPtr;
+  typedef std::shared_ptr<VarInt> VarIntPtr;
   
   class VarInt : public VarTypeTemplate<VarIntVal> 
   {

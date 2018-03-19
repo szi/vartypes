@@ -53,7 +53,7 @@ namespace VarTypes {
 //     {
 //     }
 //     
-//     VarAny(string name, std::tr1::shared_ptr<CLASS_VARVAL_TYPE> shared_ptr) : VarAnyVal<CLASS_VARVAL_TYPE>(shared_ptr), VarTypeTemplate<VarAnyVal<CLASS_VARVAL_TYPE> >(name)
+//     VarAny(string name, std::shared_ptr<CLASS_VARVAL_TYPE> shared_ptr) : VarAnyVal<CLASS_VARVAL_TYPE>(shared_ptr), VarTypeTemplate<VarAnyVal<CLASS_VARVAL_TYPE> >(name)
 //     {
 //     }
 //     
@@ -62,7 +62,7 @@ namespace VarTypes {
 //     {
 //     }
 //     
-//     VarAny(std::tr1::shared_ptr<CLASS_VARVAL_TYPE> shared_ptr) : VarAnyVal<CLASS_VARVAL_TYPE>(shared_ptr), VarTypeTemplate<VarAnyVal<CLASS_VARVAL_TYPE> >("")
+//     VarAny(std::shared_ptr<CLASS_VARVAL_TYPE> shared_ptr) : VarAnyVal<CLASS_VARVAL_TYPE>(shared_ptr), VarTypeTemplate<VarAnyVal<CLASS_VARVAL_TYPE> >("")
 //     {
 //     }
 //     
@@ -87,7 +87,7 @@ namespace VarTypes {
       VarAnyVal<CLASS_VARVAL_TYPE>::set(ptr, auto_delete_pointer); 
     }
     
-    VarAny(string name, std::tr1::shared_ptr<CLASS_VARVAL_TYPE> shared_ptr) : VarTypeTemplate<VarAnyVal<CLASS_VARVAL_TYPE> >(name)
+    VarAny(string name, std::shared_ptr<CLASS_VARVAL_TYPE> shared_ptr) : VarTypeTemplate<VarAnyVal<CLASS_VARVAL_TYPE> >(name)
     {
       VarAnyVal<CLASS_VARVAL_TYPE>::set(shared_ptr); 
     }
@@ -98,7 +98,7 @@ namespace VarTypes {
       VarAnyVal<CLASS_VARVAL_TYPE>::set(ptr, auto_delete_pointer); 
     }
     
-    VarAny(std::tr1::shared_ptr<CLASS_VARVAL_TYPE> shared_ptr) : VarTypeTemplate<VarAnyVal<CLASS_VARVAL_TYPE> >("")
+    VarAny(std::shared_ptr<CLASS_VARVAL_TYPE> shared_ptr) : VarTypeTemplate<VarAnyVal<CLASS_VARVAL_TYPE> >("")
     {
       VarAnyVal<CLASS_VARVAL_TYPE>::set(shared_ptr); 
     }
@@ -139,7 +139,7 @@ namespace VarTypes {
       VarType::addFlags(VARTYPE_FLAG_SERIALIZE_EXTERNALLY);
     }
     
-    VarAnyProtoObject(string name, std::tr1::shared_ptr<CLASS_VARVAL_TYPE> shared_ptr) : VarAny<CLASS_VARVAL_TYPE>(name, shared_ptr)
+    VarAnyProtoObject(string name, std::shared_ptr<CLASS_VARVAL_TYPE> shared_ptr) : VarAny<CLASS_VARVAL_TYPE>(name, shared_ptr)
     {
       VarType::addFlags(VARTYPE_FLAG_SERIALIZE_EXTERNALLY);
     }
@@ -150,7 +150,7 @@ namespace VarTypes {
       VarType::addFlags(VARTYPE_FLAG_SERIALIZE_EXTERNALLY);
     }
     
-    VarAnyProtoObject(std::tr1::shared_ptr<CLASS_VARVAL_TYPE> shared_ptr) : VarAny<CLASS_VARVAL_TYPE>(shared_ptr)
+    VarAnyProtoObject(std::shared_ptr<CLASS_VARVAL_TYPE> shared_ptr) : VarAny<CLASS_VARVAL_TYPE>(shared_ptr)
     {
       VarType::addFlags(VARTYPE_FLAG_SERIALIZE_EXTERNALLY);
     }
@@ -198,7 +198,7 @@ namespace VarTypes {
       VarType::addFlags(VARTYPE_FLAG_SERIALIZE_EXTERNALLY);
     }
     
-    VarAnyBoostSerializableObject(string name, std::tr1::shared_ptr<CLASS_VARVAL_TYPE> shared_ptr) : VarAny<CLASS_VARVAL_TYPE>(name, shared_ptr)
+    VarAnyBoostSerializableObject(string name, std::shared_ptr<CLASS_VARVAL_TYPE> shared_ptr) : VarAny<CLASS_VARVAL_TYPE>(name, shared_ptr)
     {
       VarType::addFlags(VARTYPE_FLAG_SERIALIZE_EXTERNALLY);
     }
@@ -209,7 +209,7 @@ namespace VarTypes {
       VarType::addFlags(VARTYPE_FLAG_SERIALIZE_EXTERNALLY);
     }
     
-    VarAnyBoostSerializableObject(std::tr1::shared_ptr<CLASS_VARVAL_TYPE> shared_ptr) : VarAny<CLASS_VARVAL_TYPE>(shared_ptr)
+    VarAnyBoostSerializableObject(std::shared_ptr<CLASS_VARVAL_TYPE> shared_ptr) : VarAny<CLASS_VARVAL_TYPE>(shared_ptr)
     {
       VarType::addFlags(VARTYPE_FLAG_SERIALIZE_EXTERNALLY);
     }
@@ -223,7 +223,7 @@ namespace VarTypes {
 //     {
 //     }
 //     
-//     VarAnyBoostSerializableObject(string name, std::tr1::shared_ptr<CLASS_VARVAL_TYPE> shared_ptr) : VarAnyVal<CLASS_VARVAL_TYPE>(shared_ptr), VarTypeTemplate<VarAnyVal<CLASS_VARVAL_TYPE> >(name)
+//     VarAnyBoostSerializableObject(string name, std::shared_ptr<CLASS_VARVAL_TYPE> shared_ptr) : VarAnyVal<CLASS_VARVAL_TYPE>(shared_ptr), VarTypeTemplate<VarAnyVal<CLASS_VARVAL_TYPE> >(name)
 //     {
 //     }
 //     
@@ -232,7 +232,7 @@ namespace VarTypes {
 //     {
 //     }
 //     
-//     VarAnyBoostSerializableObject(std::tr1::shared_ptr<CLASS_VARVAL_TYPE> shared_ptr) : VarAnyVal<CLASS_VARVAL_TYPE>(shared_ptr), VarTypeTemplate<VarAnyVal<CLASS_VARVAL_TYPE> >("")
+//     VarAnyBoostSerializableObject(std::shared_ptr<CLASS_VARVAL_TYPE> shared_ptr) : VarAnyVal<CLASS_VARVAL_TYPE>(shared_ptr), VarTypeTemplate<VarAnyVal<CLASS_VARVAL_TYPE> >("")
 //     {
 //     } 
     

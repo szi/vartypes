@@ -37,7 +37,7 @@ namespace VarTypes {
     if (dt!=0) {
       //update tree structure if it's a list item.
       if (areColFlagsSet(colflags,GUI_COLUMN_FLAG_TREE_NODE)) {
-        if (  std::tr1::dynamic_pointer_cast<VarList>(dt).get() != 0 ) {
+        if (  std::dynamic_pointer_cast<VarList>(dt).get() != 0 ) {
           if (dt->areFlagsSet(VARTYPE_FLAG_HIDE_CHILDREN)==false) {
             vd=((VarList*)(dt.get()))->getChildren();
           }
@@ -55,7 +55,7 @@ namespace VarTypes {
     colflags=myflags;
     bool type_change=false;
     if (_dt!=dt) type_change=true;
-    setEditable(areColFlagsSet( colflags,GUI_COLUMN_FLAG_EDITABLE) && (std::tr1::dynamic_pointer_cast<VarList>(dt).get() == 0 ));
+    setEditable(areColFlagsSet( colflags,GUI_COLUMN_FLAG_EDITABLE) && (std::dynamic_pointer_cast<VarList>(dt).get() == 0 ));
     if (_dt!=dt && _dt.get()!=0) {
       if (dt.get() != 0) {
         disconnect(dt.get(),SIGNAL(hasChanged(VarPtr)),this,SLOT(changeUpdate()));
@@ -80,11 +80,11 @@ namespace VarTypes {
         setToolTip(QString("<b>") + QString::fromStdString(dt->getName()) + QString("</b> (") + QString::fromStdString(dt->getTypeName()) + ")" + (type_description.isEmpty() ? QString("") : (QString("<br /><i>") + type_description + QString("</i>"))) + (instance_description.isEmpty() ? QString("") : (QString("<br />") + instance_description + QString(""))));
 
         
-        if (std::tr1::dynamic_pointer_cast<VarExternal>(dt).get() != 0) {
+        if (std::dynamic_pointer_cast<VarExternal>(dt).get() != 0) {
           if (type_change) setIcon(QIcon(":/icons/vartypes/external.png"));
 //         } else if (dt->getType() == VARTYPE_ID_TIMELINE) {
 //           setIcon(QIcon(":/icons/vartypes/time.png"));
-        } else if (std::tr1::dynamic_pointer_cast<VarList>(dt).get() != 0 ) {
+        } else if (std::dynamic_pointer_cast<VarList>(dt).get() != 0 ) {
           if (type_change) setIcon(QIcon(":/icons/vartypes/list.png"));
           //setCheckState(1,Qt::Unchecked);
         } else {

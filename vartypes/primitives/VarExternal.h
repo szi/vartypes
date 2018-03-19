@@ -42,7 +42,7 @@ namespace VarTypes {
   */
   
   class VarExternal;
-  typedef std::tr1::shared_ptr<VarExternal> VarExternalPtr;
+  typedef std::shared_ptr<VarExternal> VarExternalPtr;
   
   class VarExternal : public VarList
   {

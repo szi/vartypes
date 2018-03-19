@@ -45,7 +45,7 @@ namespace VarTypes {
   protected:
     //it's got both: a plain and a shared_ptr. It prefers the shared ptr, but sometimes external non-shared pointers need to be handled.
     CLASS_VARVAL_TYPE * _ptr;
-    std::tr1::shared_ptr<CLASS_VARVAL_TYPE> _shared_ptr;
+    std::shared_ptr<CLASS_VARVAL_TYPE> _shared_ptr;
     bool _auto_delete;
   public:
 
@@ -59,19 +59,19 @@ namespace VarTypes {
       _auto_delete=auto_delete_pointer;
       _ptr=ptr;
       if (auto_delete_pointer) {
-        _shared_ptr = std::tr1::shared_ptr<CLASS_VARVAL_TYPE>(ptr);
+        _shared_ptr = std::shared_ptr<CLASS_VARVAL_TYPE>(ptr);
       }
       changed();
     }
     
-    VarAnyVal(std::tr1::shared_ptr<CLASS_VARVAL_TYPE> shared_ptr) : _shared_ptr(shared_ptr), _ptr(shared_ptr.get()), _auto_delete(false), VarVal()
+    VarAnyVal(std::shared_ptr<CLASS_VARVAL_TYPE> shared_ptr) : _shared_ptr(shared_ptr), _ptr(shared_ptr.get()), _auto_delete(false), VarVal()
     {
       changed();
     }
     
     VarAnyVal() : _ptr(0), _auto_delete(false), VarVal()
     {
-      _shared_ptr = std::tr1::shared_ptr<CLASS_VARVAL_TYPE>(_ptr);
+      _shared_ptr = std::shared_ptr<CLASS_VARVAL_TYPE>(_ptr);
       changed();
     }
   
@@ -124,7 +124,7 @@ namespace VarTypes {
     }
     
     
-    virtual bool set(std::tr1::shared_ptr<CLASS_VARVAL_TYPE> value) {
+    virtual bool set(std::shared_ptr<CLASS_VARVAL_TYPE> value) {
       lock();
       _shared_ptr=value;
       _ptr=_shared_ptr.get();
@@ -140,9 +140,9 @@ namespace VarTypes {
         _auto_delete=auto_delete;
         _ptr = ptr;
         if (auto_delete) {
-          _shared_ptr=std::tr1::shared_ptr<CLASS_VARVAL_TYPE>(ptr);
+          _shared_ptr=std::shared_ptr<CLASS_VARVAL_TYPE>(ptr);
         } else {
-          _shared_ptr=std::tr1::shared_ptr<CLASS_VARVAL_TYPE>();
+          _shared_ptr=std::shared_ptr<CLASS_VARVAL_TYPE>();
         }
         unlock();
         changed();
@@ -156,15 +156,15 @@ namespace VarTypes {
     }
     
     
-//     virtual std::tr1::shared_ptr<CLASS_VARVAL_TYPE> get() const {
-//       std::tr1::shared_ptr<CLASS_VARVAL_TYPE> res;
+//     virtual std::shared_ptr<CLASS_VARVAL_TYPE> get() const {
+//       std::shared_ptr<CLASS_VARVAL_TYPE> res;
 //       lock();
 //       res=_ptr;
 //       unlock();
 //       return res;
 //     };
 // 
-//     virtual bool set(std::tr1::shared_ptr<CLASS_VARVAL_TYPE> val) {
+//     virtual bool set(std::shared_ptr<CLASS_VARVAL_TYPE> val) {
 //       lock();
 //       if (_ptr.get()!=val.get()) {
 //         _ptr=val;
@@ -188,11 +188,11 @@ namespace VarTypes {
 //   {
 //   protected:
 //   
-//     std::tr1::shared_ptr<CLASS_VARVAL_TYPE> _val;
+//     std::shared_ptr<CLASS_VARVAL_TYPE> _val;
 //   
 //   public:
 // 
-//     VarAnyVal(std::tr1::shared_ptr<CLASS_VARVAL_TYPE> default_val=std::tr1::shared_ptr<CLASS_VARVAL_TYPE>(new CLASS_VARVAL_TYPE())) : VarVal()
+//     VarAnyVal(std::shared_ptr<CLASS_VARVAL_TYPE> default_val=std::shared_ptr<CLASS_VARVAL_TYPE>(new CLASS_VARVAL_TYPE())) : VarVal()
 //     {
 //       set(default_val);
 //       changed();
@@ -222,15 +222,15 @@ namespace VarTypes {
 //       return blah;
 //     };
 // 
-//     virtual std::tr1::shared_ptr<CLASS_VARVAL_TYPE> get() const {
-//       std::tr1::shared_ptr<CLASS_VARVAL_TYPE> res;
+//     virtual std::shared_ptr<CLASS_VARVAL_TYPE> get() const {
+//       std::shared_ptr<CLASS_VARVAL_TYPE> res;
 //       lock();
 //       res=_val;
 //       unlock();
 //       return res;
 //     };
 // 
-//     virtual bool set(std::tr1::shared_ptr<CLASS_VARVAL_TYPE> val) {
+//     virtual bool set(std::shared_ptr<CLASS_VARVAL_TYPE> val) {
 //       lock();
 //       if (_val.get()!=val.get()) {
 //         _val=val;

@@ -38,7 +38,7 @@ namespace VarTypes {
   */
   
   class VarSelection;
-  typedef std::tr1::shared_ptr<VarSelection> VarSelectionPtr;
+  typedef std::shared_ptr<VarSelection> VarSelectionPtr;
 
   class VarSelection : public VarType
   {
